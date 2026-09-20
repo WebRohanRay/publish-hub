@@ -18,13 +18,21 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://publish-hub.vercel.app"),
   title: "Atlas Journal — Ideas that make tomorrow clearer",
   description:
-    "Atlas is a weekly editorial journal about the systems, tools, and quiet shifts shaping how we live and make.",
+    "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
   openGraph: {
     title: "Atlas Journal — Ideas that make tomorrow clearer",
     description:
-      "Atlas is a weekly editorial journal about the systems, tools, and quiet shifts shaping how we live and make.",
+      "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
+    images: ["/art/atlas_social_card.jpg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Atlas Journal — Ideas that make tomorrow clearer",
+    description:
+      "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
     images: ["/art/atlas_social_card.jpg"],
   },
 };
