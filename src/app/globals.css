@@ -4,44 +4,53 @@
   --font-serif: var(--font-dm-serif), Georgia, serif;
   --font-sans: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  --color-ink: #171C27;
-  --color-navy: #1D2430;
-  --color-navy-soft: #27323F;
-  --color-paper: #F7F6F3;
-  --color-paper-public: #F6F3ED;
-  --color-card: #FFFEFA;
-  --color-border: #E7E5DE;
-  --color-muted: #EEECE5;
-  --color-muted-text: #787A7E;
-  --color-orange: #E9A05C;
-  --color-orange-soft: #F7E2CF;
-  --color-mint: #E1EEE3;
-  --color-lavender: #E8E3F1;
-  --color-sage: #A5CFB0;
-  --color-danger: #BB4D43;
-  --color-success: #5C9670;
+  /* Modern High-Tech Editorial Palette */
+  --color-ink: #090D16;
+  --color-navy: #0B0F19;
+  --color-navy-soft: #151C2C;
+  --color-paper: #F8FAFC;
+  --color-paper-public: #F8FAFC;
+  --color-card: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-muted: #F1F5F9;
+  --color-muted-text: #64748B;
+  
+  /* Luminous High-Tech Accents */
+  --color-orange: #4F46E5;
+  --color-orange-soft: #EEF2FF;
+  --color-indigo: #4F46E5;
+  --color-indigo-soft: #EEF2FF;
+  --color-mint: #ECFDF5;
+  --color-lavender: #F5F3FF;
+  --color-sage: #6EE7B7;
+  --color-amber: #F59E0B;
+  --color-amber-soft: #FEF3C7;
+  --color-danger: #EF4444;
+  --color-success: #10B981;
 }
 
 :root {
-  --ink: #171C27;
-  --navy: #1D2430;
-  --navy-soft: #27323F;
-  --paper: #F7F6F3;
-  --paper-public: #F6F3ED;
-  --card: #FFFEFA;
-  --border: #E7E5DE;
-  --muted: #EEECE5;
-  --muted-text: #787A7E;
-  --orange: #E9A05C;
-  --orange-soft: #F7E2CF;
-  --mint: #E1EEE3;
-  --lavender: #E8E3F1;
-  --sage: #A5CFB0;
-  --danger: #BB4D43;
-  --success: #5C9670;
+  --ink: #090D16;
+  --navy: #0B0F19;
+  --navy-soft: #151C2C;
+  --paper: #F8FAFC;
+  --paper-public: #F8FAFC;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --muted: #F1F5F9;
+  --muted-text: #64748B;
+  
+  --orange: #4F46E5;
+  --orange-soft: #EEF2FF;
+  --mint: #ECFDF5;
+  --lavender: #F5F3FF;
+  --amber: #F59E0B;
+  --danger: #EF4444;
+  --success: #10B981;
 
-  --shadow-soft: 0 8px 25px rgba(46, 43, 36, 0.035);
-  --shadow-button: 0 5px 14px rgba(23, 28, 39, 0.12);
+  --shadow-soft: 0 10px 30px -5px rgba(15, 23, 42, 0.05), 0 0 1px 1px rgba(15, 23, 42, 0.03);
+  --shadow-button: 0 4px 14px 0 rgba(79, 70, 229, 0.25);
+  --shadow-card-hover: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 1px 1px rgba(79, 70, 229, 0.15);
 }
 
 body {
@@ -49,6 +58,7 @@ body {
   color: var(--ink);
   font-family: var(--font-dm-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
 h1, h2, h3, .font-serif {

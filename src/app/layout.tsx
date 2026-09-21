@@ -21,9 +21,9 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://publish-hub.vercel.app"),
-  title: "Atlas Journal — Ideas that make tomorrow clearer",
+  title: "Axiom Editorial — Empirical Intelligence & Independent Audits",
   description:
-    "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
+    "Axiom is an independent investigative editorial publication auditing top matchmaking apps, regulated iGaming operators, and high-performance software systems.",
   alternates: {
     canonical: "/",
     languages: {
@@ -35,16 +35,16 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Atlas Journal — Ideas that make tomorrow clearer",
+    title: "Axiom Editorial — Empirical Intelligence & Independent Audits",
     description:
-      "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
+      "Independent 48-point evaluations of modern matchmaking platforms, regulated iGaming systems, and digital software ergonomics.",
     images: ["/art/atlas_social_card.jpg"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Atlas Journal — Ideas that make tomorrow clearer",
+    title: "Axiom Editorial — Empirical Intelligence & Independent Audits",
     description:
-      "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
+      "Independent 48-point evaluations of modern matchmaking platforms, regulated iGaming systems, and digital software ergonomics.",
     images: ["/art/atlas_social_card.jpg"],
   },
 };
@@ -59,7 +59,7 @@ export default function RootLayout({
       <head>
         <GlobalJsonLd />
       </head>
-      <body className="antialiased font-sans text-ink bg-paper selection:bg-orange/30 selection:text-ink">
+      <body className="antialiased font-sans text-ink bg-paper selection:bg-indigo-600/20 selection:text-indigo-900">
         <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
