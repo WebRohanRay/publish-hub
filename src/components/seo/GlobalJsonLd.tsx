@@ -4,10 +4,10 @@ export const GlobalJsonLd: React.FC = () => {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Atlas Journal",
-    "alternateName": ["Atlas Editorial", "Atlas PublishHub"],
+    "name": "Axiom Editorial",
+    "alternateName": ["Axiom Journal", "Axiom Review"],
     "url": "https://publish-hub.vercel.app",
-    "description": "Independent empirical evaluations of matchmaking platforms, regulated iGaming operators, and intentional digital software.",
+    "description": "Independent empirical evaluations of matchmaking platforms, regulated iGaming operators, and high-performance software systems.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -22,7 +22,7 @@ export const GlobalJsonLd: React.FC = () => {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "NewsMediaOrganization",
-    "name": "Atlas Journal",
+    "name": "Axiom Editorial",
     "url": "https://publish-hub.vercel.app",
     "logo": {
       "@type": "ImageObject",
@@ -35,7 +35,7 @@ export const GlobalJsonLd: React.FC = () => {
       {
         "@type": "Person",
         "name": "Maya Patel",
-        "jobTitle": "Editor-in-Chief & Lead Systems Auditor"
+        "jobTitle": "Lead Systems Auditor & Editor-in-Chief"
       }
     ],
     "publishingPrinciples": "https://publish-hub.vercel.app/editorial-standards",
@@ -47,7 +47,7 @@ export const GlobalJsonLd: React.FC = () => {
       "Software Ergonomics & Dark Pattern Detection"
     ],
     "sameAs": [
-      "https://twitter.com/AtlasJournalHQ",
+      "https://twitter.com/AxiomEditorialHQ",
       "https://github.com/WebRohanRay/publish-hub"
     ]
   };

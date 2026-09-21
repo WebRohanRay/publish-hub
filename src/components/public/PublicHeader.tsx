@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { AtlasLogo } from "@/components/brand/AtlasLogo";
+import { AxiomLogo } from "@/components/brand/AxiomLogo";
 import { LanguageSwitcher } from "@/components/brand/LanguageSwitcher";
 import { useI18n } from "@/lib/i18n";
 
@@ -12,16 +12,16 @@ export const PublicHeader: React.FC = () => {
 
   return (
     <>
-      {/* Top Affiliate & Regulatory Disclosure Bar */}
-      <div className="bg-navy text-[11px] text-slate-300 py-1.5 px-4 text-center border-b border-navy-soft/60">
+      {/* Top Regulatory & Empirical Audit Bar */}
+      <div className="bg-slate-950 text-[11px] text-slate-300 py-1.5 px-4 text-center border-b border-slate-800">
         <div className="max-w-6xl mx-auto flex items-center justify-between text-xs">
-          <span className="flex items-center gap-1.5 truncate">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <span className="font-semibold text-white">Independent Reviews:</span> We independently audit every platform & sportsbook.
+          <span className="flex items-center gap-2 truncate">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="font-semibold text-white">Empirical Audits:</span> 48-Point Independent Testing Protocol Across All Verticals.
           </span>
           <div className="flex items-center gap-4">
             <span className="hidden sm:inline text-slate-400 text-[11px]">
-              18+ Only • Please Gamble & Date Responsibly
+              18+ Only • Play & Date Responsibly
             </span>
             <LanguageSwitcher isDark={true} />
           </div>
@@ -29,34 +29,40 @@ export const PublicHeader: React.FC = () => {
       </div>
 
       {/* Main Sticky Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-paper-public/85 backdrop-blur-md transition-all">
+      <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-white/90 backdrop-blur-md transition-all shadow-xs">
         <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-6">
           {/* Logo & Desktop Nav */}
           <div className="flex items-center gap-8">
-            <AtlasLogo href="/" />
+            <AxiomLogo href="/" />
 
-            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-ink/80">
+            <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
               <Link
                 href="/category/dating"
-                className="transition-colors hover:text-ink hover:underline decoration-orange underline-offset-4"
+                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
               >
                 {t.nav.dating}
               </Link>
               <Link
                 href="/category/igaming-betting"
-                className="transition-colors hover:text-ink hover:underline decoration-orange underline-offset-4"
+                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
               >
                 {t.nav.casino}
               </Link>
               <Link
-                href="/category/ideas-culture"
-                className="transition-colors hover:text-ink hover:underline decoration-orange underline-offset-4"
+                href="/research"
+                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
               >
-                {t.nav.culture}
+                2026 Research
+              </Link>
+              <Link
+                href="/methodology"
+                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
+              >
+                Testing Protocol
               </Link>
               <Link
                 href="/blog"
-                className="transition-colors hover:text-ink hover:underline decoration-orange underline-offset-4"
+                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
               >
                 {t.nav.reviews}
               </Link>
@@ -65,19 +71,19 @@ export const PublicHeader: React.FC = () => {
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
-            {/* Direct Dashboard Link */}
+            {/* Direct Admin Access */}
             <Link
               href="/admin"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-ink shadow-xs transition hover:border-orange hover:text-orange"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-paper px-3.5 py-1.5 text-xs font-semibold text-ink shadow-xs transition hover:border-indigo-500 hover:text-indigo-600"
             >
-              <span className="h-2 w-2 rounded-full bg-orange animate-pulse" />
-              {t.nav.dashboard}
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span>Admin Portal</span>
             </Link>
 
             {/* Subscribe CTA button */}
             <a
               href="#newsletter"
-              className="hidden sm:inline-flex items-center justify-center rounded-full bg-orange-soft px-4 py-1.5 text-xs font-semibold text-ink border border-orange/40 transition hover:bg-orange hover:text-white"
+              className="hidden sm:inline-flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 text-xs font-bold shadow-button transition"
             >
               {t.nav.subscribe}
             </a>
@@ -85,7 +91,7 @@ export const PublicHeader: React.FC = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-ink rounded-lg hover:bg-muted"
+              className="md:hidden p-2 text-ink rounded-lg hover:bg-muted cursor-pointer"
               aria-label="Toggle Navigation"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -101,32 +107,39 @@ export const PublicHeader: React.FC = () => {
 
         {/* Mobile dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-border bg-paper-public px-6 py-4 space-y-3 animate-in fade-in slide-in-from-top-2">
+          <div className="md:hidden border-b border-border bg-white px-6 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 shadow-lg">
             <Link
               href="/category/dating"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink"
+              className="block text-sm font-medium text-ink hover:text-indigo-600"
             >
               {t.nav.dating}
             </Link>
             <Link
               href="/category/igaming-betting"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink"
+              className="block text-sm font-medium text-ink hover:text-indigo-600"
             >
               {t.nav.casino}
             </Link>
             <Link
-              href="/category/ideas-culture"
+              href="/research"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink"
+              className="block text-sm font-medium text-ink hover:text-indigo-600"
             >
-              {t.nav.culture}
+              2026 Research Hub
+            </Link>
+            <Link
+              href="/methodology"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block text-sm font-medium text-ink hover:text-indigo-600"
+            >
+              Testing Protocol
             </Link>
             <Link
               href="/blog"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink"
+              className="block text-sm font-medium text-ink hover:text-indigo-600"
             >
               {t.nav.reviews}
             </Link>
@@ -137,7 +150,7 @@ export const PublicHeader: React.FC = () => {
             <Link
               href="/admin"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-semibold text-orange pt-1"
+              className="block text-sm font-semibold text-indigo-600 pt-1"
             >
               Open Admin Dashboard →
             </Link>
