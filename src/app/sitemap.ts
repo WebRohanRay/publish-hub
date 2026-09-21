@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   });
 
-  // Static authority & core routes
+  // Core public routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
@@ -30,34 +30,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "daily",
       priority: 0.9,
       alternates: getAlternates("/blog"),
-    },
-    {
-      url: `${baseUrl}/research`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-      alternates: getAlternates("/research"),
-    },
-    {
-      url: `${baseUrl}/methodology`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.85,
-      alternates: getAlternates("/methodology"),
-    },
-    {
-      url: `${baseUrl}/editorial-standards`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.85,
-      alternates: getAlternates("/editorial-standards"),
-    },
-    {
-      url: `${baseUrl}/press`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-      alternates: getAlternates("/press"),
     },
     {
       url: `${baseUrl}/about`,
@@ -89,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Category routes
+  // Editorial category routes
   const categoryRoutes: MetadataRoute.Sitemap = INITIAL_CATEGORIES.map((cat) => ({
     url: `${baseUrl}/category/${cat.slug}`,
     lastModified: now,
@@ -98,8 +70,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: getAlternates(`/category/${cat.slug}`),
   }));
 
-  // Post routes
-  const postRoutes: MetadataRoute.Sitemap = INITIAL_POSTS.map((post) => ({
+  // Published article routes
+  const postRoutes: MetadataRoute.Sitemap = INITIAL_POSTS.filter((p) => p.status === "published").map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: now,
     changeFrequency: "weekly",

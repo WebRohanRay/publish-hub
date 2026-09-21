@@ -1,13 +1,20 @@
 // Universal cryptographic authentication for Edge Middleware and Server Handlers
 
 const SECRET_KEY =
-  process.env.ADMIN_SESSION_SECRET || "axiom-editorial-super-secret-key-2026-secure";
+  process.env.ADMIN_SESSION_SECRET || "atlas-journal-super-secret-key-2026-secure";
 export const ADMIN_DEFAULT_EMAIL =
-  process.env.ADMIN_EMAIL || "admin@axiom.org";
+  process.env.ADMIN_EMAIL || "maya.patel@atlasjournal.io";
 export const ADMIN_DEFAULT_PASSWORD =
-  process.env.ADMIN_PASSWORD || "axiom2026!";
+  process.env.ADMIN_PASSWORD || "atlas2026!";
 
-export const COOKIE_NAME = "axiom_admin_session";
+// Additional aliases for administrator convenience
+export const ADMIN_EMAIL_ALIASES = [
+  "admin@atlasjournal.io",
+  "editorial@atlasjournal.io",
+  "admin@publishhub.io",
+];
+
+export const COOKIE_NAME = "atlas_admin_session";
 
 async function getCryptoKey(): Promise<CryptoKey> {
   const enc = new TextEncoder();

@@ -50,29 +50,29 @@ export const INITIAL_CATEGORIES: Category[] = [
     id: "cat-dating",
     name: "Dating & Matchmaking",
     slug: "dating",
-    description: "In-depth comparisons, verified app reviews, and free vs. paid breakdowns.",
+    description: "In-depth app reviews, free vs paid breakdowns, match rates, and real user experiences.",
     count: 38,
   },
   {
-    id: "cat-betting",
+    id: "cat-gambling",
     name: "Casino & Sports Betting",
-    slug: "igaming-betting",
-    description: "Regulated casino reviews, real odds breakdowns, and exclusive bonus offers.",
+    slug: "gambling-casino",
+    description: "Regulated casinos, instant crypto payouts, sportsbook odds, and audited bonus codes.",
     count: 46,
   },
   {
-    id: "cat-ideas",
-    name: "Ideas & Culture",
-    slug: "ideas-culture",
-    description: "Systems thinking, tech evolution, and shifts in digital society.",
-    count: 24,
+    id: "cat-adult",
+    name: "Adult Entertainment & Creators",
+    slug: "adult-lifestyle",
+    description: "Creator platforms, webcam networks, discreet billing analysis, and adult gaming tech.",
+    count: 29,
   },
   {
-    id: "cat-design",
-    name: "Design & Product",
-    slug: "design-practice",
-    description: "High-converting UI, interface psychology, and digital craftsmanship.",
-    count: 31,
+    id: "cat-guides",
+    name: "Privacy, Crypto & Guides",
+    slug: "guides-security",
+    description: "VPN recommendations, anonymous billing, crypto deposits, and safety best practices.",
+    count: 21,
   },
 ];
 
@@ -81,181 +81,144 @@ export const INITIAL_POSTS: Post[] = [
     id: "post-dating-1",
     title: "Best Dating Apps of 2026: The Definitive Free vs. VIP Breakdown",
     slug: "best-dating-apps-free-vs-paid-breakdown",
-    excerpt: "We tested 18 top dating platforms to reveal which subscriptions actually deliver real matches and which are paywalled vanity.",
+    excerpt: "We tested 18 top matchmaking and casual dating platforms to uncover which subscriptions actually deliver real connections versus paywalled vanity.",
     category: "Dating & Matchmaking",
     categorySlug: "dating",
     status: "published",
     readingTime: "7 min read",
     image: "/art/dating_comparison_guide.jpg",
-    reads: 42190,
-    likes: 1420,
-    commentsCount: 34,
+    reads: 42890,
+    likes: 1842,
+    commentsCount: 38,
     publishedAt: "Sep 20, 2026",
-    rating: 4.9,
     badge: "Editor's Top Pick",
-    bonusText: "Free 7-Day VIP Trial + Unlimited Swipes",
-    affiliateUrl: "#claim-dating-offer",
-    pros: [
-      "Rigorous photo & ID verification eliminates bots",
-      "Algorithmic compatibility scoring based on real behavior",
-      "Free tier includes 5 free direct messages daily",
-    ],
-    cons: [
-      "Travel mode requires premium tier",
-      "Higher subscription price on iOS App Store than web",
-    ],
+    bonusText: "Free 7-Day Trial + Boosted Profile Visibility",
+    affiliateUrl: "#dating-offer",
     author: {
       name: "Maya Patel",
       avatar: "/avatars/avatar_maya_patel.jpg",
-      role: "Lead Tech & Lifestyle Editor",
+      role: "Lead Lifestyle Editor",
     },
     content: `
-Dating apps have undergone a radical transformation. The era of mindless swiping is winding down, replaced by intentional matchmaking platforms that leverage behavior-driven compatibility.
+Modern dating apps have split into two distinct tiers: mainstream algorithmic matchmakers that throttle free visibility, and high-converting platforms built for intentional adults.
 
-### Free vs. Paid: What Are You Really Paying For?
+### Free vs. Paid: What Are You Actually Buying?
 
-In our 60-day rigorous testing across 18 major platforms, we found that 72% of free tiers throttle message visibility once match queues exceed 15 connections. The top-performing platforms, however, give free users genuine access while reserving priority spotlights and read receipts for VIP tiers.
+In our 60-day hands-on evaluation of 18 leading platforms, we analyzed reply curves, bot filtering efficiency, and subscription cancellation transparency:
 
-### Our Top Evaluation Metrics
-1. **Verification Accuracy**: How effectively the platform weeds out scammers and fake profiles.
-2. **Active Response Rate**: Average time between initial greeting and meaningful conversation.
-3. **Cancellation Transparency**: Ease of pausing or terminating recurring subscriptions.
+1. **Verification & Bot Suppression**: Platforms with mandatory selfie verification showed a 74% decrease in ghost profiles and automated spam bots.
+2. **Reply Latency**: Premium tiers granting priority inbox placement delivered 3.2× faster mutual responses than unpaid standard accounts.
+3. **Billing Clarity**: We strictly grade platforms based on one-click subscription cancellation and transparent renewal notifications.
+
+### Top Tips for Maximizing Match Rates
+
+- **Quality Photos Over Quantity**: Profiles with 3 high-contrast, candid photos received 58% more direct replies than those with 6+ staged selfies.
+- **Direct Icebreakers**: Skip generic greetings; referencing shared lifestyle interests or favorite nightlife venues increases conversation longevity.
     `,
   },
   {
     id: "post-casino-1",
-    title: "Top Regulated Casinos & Sportsbooks: 2026 Bonus Roundups & Fair Odds",
-    slug: "top-regulated-casinos-sportsbooks-bonus-roundups",
-    excerpt: "Comprehensive evaluation of payout speeds, licensing transparency, and exclusive matched deposit bonus vouchers up to €5,000.",
+    title: "Top Regulated Casinos & Sportsbooks: Instant Payouts & 2026 Fair Odds",
+    slug: "top-regulated-casinos-sportsbooks-instant-payouts",
+    excerpt: "Complete evaluation of licensed iGaming operators, withdrawal speeds across crypto and wire rails, and transparent matched bonus rollover rules.",
     category: "Casino & Sports Betting",
-    categorySlug: "igaming-betting",
+    categorySlug: "gambling-casino",
     status: "published",
-    readingTime: "9 min read",
+    readingTime: "8 min read",
     image: "/art/casino_betting_hero.jpg",
-    reads: 38840,
-    likes: 980,
-    commentsCount: 22,
+    reads: 51200,
+    likes: 2410,
+    commentsCount: 52,
     publishedAt: "Sep 19, 2026",
-    rating: 4.8,
     badge: "Highest Payout Rate",
-    bonusText: "100% Match up to €5,000 + 150 Free Spins",
-    affiliateUrl: "#claim-casino-bonus",
-    pros: [
-      "Instant crypto and wire withdrawals within 15 minutes",
-      "Official licensing with independently audited RNG fair play",
-      "Live dealer games with 4K multi-angle streaming",
-    ],
-    cons: [
-      "30x wagering requirement on welcome bonus",
-      "Certain regional restrictions apply",
-    ],
+    bonusText: "100% Match up to $2,500 + 100 Free Spins",
+    affiliateUrl: "#casino-offer",
     author: {
       name: "Maya Patel",
       avatar: "/avatars/avatar_maya_patel.jpg",
-      role: "Lead Tech & Lifestyle Editor",
+      role: "Lead Gaming Editor",
     },
     content: `
-Navigating online sportsbooks and licensed digital casinos requires discernment. Our editorial team reviewed dozens of platforms to pinpoint operators with stellar regulatory compliance, fast withdrawal pipelines, and fair wagering rules.
+When selecting an online sportsbook or licensed digital casino, flashy promotional banners matter far less than withdrawal clearance speed and independently audited RTP percentages.
 
-### Understanding Bonus Wagering Terms
+### Auditing Withdrawal Speeds Across Payment Rails
 
-A 200% match bonus is only as good as its rollover clause. We strictly prioritize operators offering 25x-35x wagering requirements over predatory 60x lockouts. Always ensure that table games and live roulette contribute meaningfully toward your clearance requirements.
+We tested real financial deposits and withdrawals across major operators:
+- **Crypto Rails (USDT/BTC)**: Average settlement within 18 minutes of request approval.
+- **E-Wallets**: Average clearance in 2 to 4 hours with minimal transaction overhead.
+- **Traditional Cards/Wires**: 24 to 72 hours depending on bank verification.
+
+### Understanding Bonus Rollover Requirements
+
+A 200% match bonus is only valuable if the wagering requirement is achievable. We recommend operators with rollover thresholds below 35× and transparent contributions on table games and live dealers.
     `,
   },
   {
-    id: "post-bonuses-1",
-    title: "VIP Betting Vouchers: How to Claim €5,000 in Matched Free Bets",
-    slug: "vip-betting-vouchers-free-bets-guide",
-    excerpt: "Step-by-step guide to unlocking tier-one loyalty rewards, odds boosts, and risk-free accumulator tokens.",
-    category: "Casino & Sports Betting",
-    categorySlug: "igaming-betting",
+    id: "post-adult-1",
+    title: "The Rise of Creator-Led Adult Platforms: Privacy, Billing & Top Networks",
+    slug: "creator-adult-platforms-privacy-billing-review",
+    excerpt: "An in-depth analysis of premium creator subscriptions, discreet billing descriptors, high-definition streaming performance, and consumer privacy controls.",
+    category: "Adult Entertainment & Creators",
+    categorySlug: "adult-lifestyle",
     status: "published",
-    readingTime: "5 min read",
-    image: "/art/free_bet_bonuses.jpg",
-    reads: 27150,
-    likes: 814,
-    commentsCount: 16,
-    publishedAt: "Sep 17, 2026",
-    rating: 4.7,
-    badge: "Exclusive Promo",
-    bonusText: "Risk-Free €50 Bet on Premier League / Champions League",
-    affiliateUrl: "#claim-vip-vouchers",
-    pros: [
-      "No deposit required for the first €20 free bet token",
-      "Valid on both live in-play and pre-match odds",
-    ],
-    cons: [
-      "Free bet stake is not returned in winnings",
-    ],
+    readingTime: "6 min read",
+    image: "/art/adult_lifestyle_hero.jpg",
+    reads: 36400,
+    likes: 1290,
+    commentsCount: 27,
+    publishedAt: "Sep 18, 2026",
+    badge: "Discreet Billing",
+    bonusText: "Complimentary HD Preview Tokens",
+    affiliateUrl: "#adult-offer",
     author: {
       name: "Maya Patel",
       avatar: "/avatars/avatar_maya_patel.jpg",
-      role: "Lead Tech & Lifestyle Editor",
+      role: "Digital Culture Editor",
     },
+    content: `
+Adult digital entertainment has migrated rapidly toward creator-owned networks and high-fidelity interactive platforms.
+
+### Consumer Privacy & Payment Discretion
+
+For consumers, privacy is the number one priority. Our review framework assesses:
+1. **Billing Statement Discretion**: How charges appear on bank statements (neutral corporate descriptors vs. explicit naming).
+2. **Anonymous Payment Support**: Integration of cryptocurrency, prepaid vouchers, and virtual cards.
+3. **Data Retention & Account Purging**: Clear options to permanently delete account history, chat logs, and billing tokens.
+
+### Platform Performance & Interaction Quality
+
+Top-tier creator platforms stand out by offering ultra-low latency interactive streaming, tipping systems with transparent fee structures, and exclusive 4K on-demand content archives.
+    `,
   },
   {
-    id: "post-dating-2",
-    title: "The Best Dating Apps for Busy Professionals Seeking Real Intent",
-    slug: "best-dating-apps-for-busy-professionals",
-    excerpt: "Curated matchmaking networks with verified LinkedIn/career screening and scheduled video dates for focused daters.",
-    category: "Dating & Matchmaking",
-    categorySlug: "dating",
+    id: "post-guides-1",
+    title: "Cryptocurrency & Anonymous Payments: The Ultimate Guide to Discreet Subscriptions",
+    slug: "cryptocurrency-anonymous-payments-discreet-subscriptions-guide",
+    excerpt: "How to use USDT, Bitcoin, burner cards, and privacy-focused VPNs to protect your financial footprint across dating, gaming, and online memberships.",
+    category: "Privacy, Crypto & Guides",
+    categorySlug: "guides-security",
     status: "published",
-    readingTime: "6 min read",
+    readingTime: "5 min read",
     image: "/art/dating_apps_hero.jpg",
-    reads: 31400,
-    likes: 920,
+    reads: 28950,
+    likes: 950,
     commentsCount: 19,
     publishedAt: "Sep 16, 2026",
-    rating: 4.8,
-    badge: "Best for Relationships",
-    bonusText: "Complimentary Profile Audit & 10 Priority Introductions",
-    affiliateUrl: "#claim-dating-match",
+    badge: "Essential Guide",
     author: {
       name: "Maya Patel",
       avatar: "/avatars/avatar_maya_patel.jpg",
-      role: "Lead Tech & Lifestyle Editor",
+      role: "Security & Privacy Specialist",
     },
-  },
-  {
-    id: "post-ideas-1",
-    title: "A Field Guide to Thinking in Systems",
-    slug: "a-field-guide-to-thinking-in-systems",
-    excerpt: "The simple mental models that help us see feedback loops, leverage points, and structural incentives.",
-    category: "Ideas & Culture",
-    categorySlug: "ideas-culture",
-    status: "published",
-    readingTime: "6 min read",
-    image: "/art/story_systems_thinking.jpg",
-    reads: 14208,
-    likes: 521,
-    commentsCount: 9,
-    publishedAt: "Sep 14, 2026",
-    author: {
-      name: "Maya Patel",
-      avatar: "/avatars/avatar_maya_patel.jpg",
-      role: "Lead Tech & Lifestyle Editor",
-    },
-  },
-  {
-    id: "post-design-1",
-    title: "Why the Best Products Feel Inevitable",
-    slug: "why-the-best-products-feel-inevitable",
-    excerpt: "Behind every timeless digital interface and high-converting funnel is a thousand quiet subtractions.",
-    category: "Design & Product",
-    categorySlug: "design-practice",
-    status: "scheduled",
-    readingTime: "5 min read",
-    image: "/art/story_inevitable_design.jpg",
-    reads: 9140,
-    likes: 318,
-    commentsCount: 6,
-    publishedAt: "Scheduled for Sep 24",
-    author: {
-      name: "Maya Patel",
-      avatar: "/avatars/avatar_maya_patel.jpg",
-      role: "Lead Tech & Lifestyle Editor",
-    },
+    content: `
+Managing digital subscriptions across dating apps, regulated gaming sites, and entertainment platforms requires thoughtful financial hygiene.
+
+### Recommended Privacy Stack for 2026
+
+1. **Virtual Burner Cards**: Use single-merchant virtual debit cards with customized spending limits to prevent surprise auto-renewals.
+2. **Stablecoins on Low-Fee Chains**: Depositing via USDT or USDC on fast networks guarantees instant settlement without sharing credit card numbers.
+3. **Dedicated Email Aliases**: Maintain separate email accounts for entertainment services to prevent inbox clustering and credential exposure.
+    `,
   },
 ];
 
@@ -267,8 +230,8 @@ export const INITIAL_COMMENTS: CommentItem[] = [
     authorName: "Liam Sterling",
     authorEmail: "liam.s@example.com",
     body: "The breakdown between active response rates versus cosmetic perks was eye-opening. Saved me $60 on a useless subscription.",
-    createdAt: "15m ago",
-    status: "pending",
+    createdAt: "25m ago",
+    status: "approved",
   },
   {
     id: "comm-2",
@@ -276,18 +239,18 @@ export const INITIAL_COMMENTS: CommentItem[] = [
     postTitle: "Top Regulated Casinos & Sportsbooks",
     authorName: "Oliver Grant",
     authorEmail: "oliver.g@sportsbeat.uk",
-    body: "Finally a review that transparently explains the 30x rollover terms instead of just hyping the headline bonus number.",
-    createdAt: "42m ago",
-    status: "pending",
+    body: "Finally a review that transparently explains the rollover terms and payout speed instead of just headline bonuses.",
+    createdAt: "1h ago",
+    status: "approved",
   },
   {
     id: "comm-3",
-    postId: "post-dating-2",
-    postTitle: "Best Dating Apps for Busy Professionals",
-    authorName: "Sophia Martinez",
-    authorEmail: "sophia.m@venture.co",
-    body: "Appreciate the focus on privacy and profile verification. Great comparison table.",
-    createdAt: "2h ago",
-    status: "pending",
+    postId: "post-adult-1",
+    postTitle: "The Rise of Creator-Led Adult Platforms",
+    authorName: "Marcus Sterling",
+    authorEmail: "marcus@example.com",
+    body: "Appreciate the clear breakdown of discreet billing descriptors. Very helpful guide.",
+    createdAt: "3h ago",
+    status: "approved",
   },
 ];

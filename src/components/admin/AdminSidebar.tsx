@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { AxiomLogo } from "@/components/brand/AxiomLogo";
+import { AtlasLogo } from "@/components/brand/AtlasLogo";
 
 interface AdminSidebarProps {
   onCloseMobile?: () => void;
@@ -56,10 +56,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
   ];
 
   return (
-    <aside className="w-[255px] shrink-0 bg-slate-950 text-slate-300 flex flex-col h-screen sticky top-0 border-r border-slate-800 select-none z-50">
+    <aside className="w-[255px] shrink-0 bg-navy text-slate-300 flex flex-col h-screen sticky top-0 border-r border-navy-soft select-none z-50">
       {/* Brand Header */}
-      <div className="p-6 pb-4 border-b border-slate-800/80 flex items-center justify-between">
-        <AxiomLogo isDark={true} href="/admin" />
+      <div className="p-6 pb-4 border-b border-navy-soft flex items-center justify-between">
+        <AtlasLogo isDark={true} href="/admin" />
         {onCloseMobile && (
           <button
             onClick={onCloseMobile}
@@ -71,14 +71,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
       </div>
 
       {/* Workspace Indicator */}
-      <div className="px-4 py-3 mx-4 my-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+      <div className="px-4 py-3 mx-4 my-3 rounded-xl bg-navy-soft border border-navy-soft/80 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 font-bold text-xs text-white shadow-xs">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange font-bold text-xs text-ink shadow-xs">
             A
           </div>
           <div>
-            <div className="text-xs font-semibold text-white">Axiom Editorial</div>
-            <div className="text-[10px] text-slate-400">Production Workspace</div>
+            <div className="text-xs font-semibold text-white">Atlas Editorial</div>
+            <div className="text-[10px] text-slate-400">Editorial Desk</div>
           </div>
         </div>
         <span className="h-2 w-2 rounded-full bg-emerald-400" title="System Online" />
@@ -101,12 +101,12 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
                     onClick={onCloseMobile}
                     className={`relative flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition ${
                       isActive
-                        ? "bg-indigo-950/70 text-indigo-200 font-semibold border border-indigo-800/50"
-                        : "text-slate-300 hover:bg-slate-900 hover:text-white"
+                        ? "bg-navy-soft text-orange font-semibold border border-orange/30"
+                        : "text-slate-300 hover:bg-navy-soft/60 hover:text-white"
                     }`}
                   >
                     {isActive && (
-                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-indigo-500" />
+                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-orange" />
                     )}
 
                     <div className="flex items-center gap-2.5">
@@ -122,9 +122,9 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
       </div>
 
       {/* Profile & Logout Row */}
-      <div className="p-4 border-t border-slate-800/80 flex items-center justify-between bg-slate-950">
+      <div className="p-4 border-t border-navy-soft flex items-center justify-between bg-navy">
         <div className="flex items-center gap-2.5">
-          <div className="relative h-8 w-8 rounded-full overflow-hidden border border-indigo-500/40 bg-slate-800">
+          <div className="relative h-8 w-8 rounded-full overflow-hidden border border-orange/40 bg-navy-soft">
             <Image
               src="/avatars/avatar_maya_patel.jpg"
               alt="Maya Patel"
@@ -134,13 +134,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
           </div>
           <div>
             <div className="text-xs font-semibold text-white">Maya Patel</div>
-            <div className="text-[10px] text-emerald-400">Super Admin</div>
+            <div className="text-[10px] text-orange">Super Admin</div>
           </div>
         </div>
 
         <button
           onClick={handleLogout}
-          className="text-xs text-slate-400 hover:text-red-400 transition p-1.5 rounded-lg hover:bg-slate-900 cursor-pointer"
+          className="text-xs text-slate-400 hover:text-red-400 transition p-1.5 rounded-lg hover:bg-navy-soft cursor-pointer"
           title="Log out"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

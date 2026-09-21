@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import { I18nProvider } from "@/lib/i18n";
 import { GlobalJsonLd } from "@/components/seo/GlobalJsonLd";
+import { AdsterraSocialBar, AdsterraPopunderHook } from "@/components/ads/AdsterraMonetization";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -21,9 +22,22 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://publish-hub.vercel.app"),
-  title: "Axiom Editorial — Empirical Intelligence & Independent Audits",
+  title: "Atlas Journal — Dating, iGaming & Adult Entertainment Reviews",
   description:
-    "Axiom is an independent investigative editorial publication auditing top matchmaking apps, regulated iGaming operators, and high-performance software systems.",
+    "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
+  keywords: [
+    "dating apps review",
+    "online casino instant payout",
+    "adult entertainment reviews",
+    "sports betting bonuses",
+    "discreet billing",
+    "crypto gambling vouchers",
+    "best matchmaking apps 2026",
+    "Atlas Journal",
+  ],
+  authors: [{ name: "Maya Patel", url: "https://publish-hub.vercel.app/about" }],
+  creator: "Maya Patel",
+  publisher: "Atlas Journal",
   alternates: {
     canonical: "/",
     languages: {
@@ -35,17 +49,36 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Axiom Editorial — Empirical Intelligence & Independent Audits",
+    title: "Atlas Journal — Dating, iGaming & Adult Entertainment Reviews",
     description:
-      "Independent 48-point evaluations of modern matchmaking platforms, regulated iGaming systems, and digital software ergonomics.",
-    images: ["/art/atlas_social_card.jpg"],
+      "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
+    url: "https://publish-hub.vercel.app",
+    siteName: "Atlas Journal",
+    images: [
+      {
+        url: "/art/atlas_social_card.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Atlas Journal — Dating, iGaming & Adult Entertainment",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Axiom Editorial — Empirical Intelligence & Independent Audits",
+    title: "Atlas Journal — Dating, iGaming & Adult Entertainment Reviews",
     description:
-      "Independent 48-point evaluations of modern matchmaking platforms, regulated iGaming systems, and digital software ergonomics.",
+      "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
     images: ["/art/atlas_social_card.jpg"],
+    creator: "@AtlasJournalHQ",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
   },
 };
 
@@ -59,8 +92,13 @@ export default function RootLayout({
       <head>
         <GlobalJsonLd />
       </head>
-      <body className="antialiased font-sans text-ink bg-paper selection:bg-indigo-600/20 selection:text-indigo-900">
-        <I18nProvider>{children}</I18nProvider>
+      <body className="antialiased font-sans text-ink bg-paper selection:bg-orange/30 selection:text-ink">
+        <I18nProvider>
+          {children}
+          {/* Adsterra High-RPM Monetization Engine */}
+          <AdsterraSocialBar />
+          <AdsterraPopunderHook />
+        </I18nProvider>
       </body>
     </html>
   );

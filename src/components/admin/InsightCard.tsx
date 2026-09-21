@@ -11,18 +11,18 @@ export const InsightCard: React.FC = () => {
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-wider text-orange">
-          Editorial Insight
+          Editor’s Note
         </span>
-        <span className="text-xs text-slate-400">✦ AI Pulse</span>
+        <span className="text-xs text-slate-400">✦ Audience Pulse</span>
       </div>
 
       {/* Content */}
       <div className="relative z-10 my-6">
         <h4 className="font-serif text-xl sm:text-2xl font-normal leading-snug text-white">
-          Your audience is leaning into high-intent reviews.
+          Your audience is leaning into practical AI.
         </h4>
         <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed">
-          Comparisons in Dating Apps and regulated iGaming are generating 2.4× higher engagement and bookmark rates than general editorial stories.
+          Posts in Artificial intelligence are earning 2.4× more saves than your average story.
         </p>
       </div>
 
@@ -30,9 +30,9 @@ export const InsightCard: React.FC = () => {
       <div className="relative z-10 flex items-center justify-between pt-4 border-t border-navy-soft/80 text-xs">
         <div className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-orange" />
-          <span className="font-semibold text-white">Dating & Matchmaking</span>
+          <span className="font-semibold text-white">Artificial intelligence</span>
         </div>
-        <span className="text-[11px] text-slate-400">42% of reader volume</span>
+        <span className="text-[11px] text-slate-400">Top-performing category</span>
       </div>
     </div>
   );

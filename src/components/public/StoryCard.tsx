@@ -10,23 +10,22 @@ interface StoryCardProps {
 export const StoryCard: React.FC<StoryCardProps> = ({ post }) => {
   return (
     <article className="group flex flex-col rounded-2xl border border-border bg-card overflow-hidden shadow-soft transition-all duration-300 hover:border-slate-400/50 hover:shadow-lg hover:-translate-y-1">
-      {/* Image Banner */}
+      {/* Image Frame with reading time */}
       <Link href={`/blog/${post.slug}`} className="relative aspect-16/9 w-full overflow-hidden bg-muted">
         <Image
-          src={post.image}
+          src={post.image || "/art/feature_personal_ai.jpg"}
           alt={post.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {/* Rating Badge or Read Time */}
-        <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          {post.badge && (
+        {post.badge && (
+          <div className="absolute top-3 left-3">
             <span className="rounded-md bg-navy/90 backdrop-blur-xs px-2.5 py-1 text-[10px] font-bold text-white shadow-xs">
               {post.badge}
             </span>
-          )}
-        </div>
+          </div>
+        )}
         <div className="absolute top-3 right-3 rounded-md bg-white/90 backdrop-blur-xs px-2.5 py-1 text-[10px] font-semibold text-ink shadow-xs">
           {post.readingTime}
         </div>
@@ -34,16 +33,14 @@ export const StoryCard: React.FC<StoryCardProps> = ({ post }) => {
 
       {/* Content Container */}
       <div className="flex flex-1 flex-col p-6">
-        {/* Category & Rating */}
+        {/* Category & Published Date */}
         <div className="flex items-center justify-between gap-2 text-xs text-muted-text">
           <span className="font-semibold text-orange uppercase tracking-wider text-[11px]">
             {post.category}
           </span>
-          {post.rating && (
-            <span className="flex items-center gap-1 font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full text-[11px]">
-              ★ {post.rating.toFixed(1)}
-            </span>
-          )}
+          <span className="text-[11px] text-muted-text">
+            {post.publishedAt}
+          </span>
         </div>
 
         {/* Title */}
@@ -58,20 +55,12 @@ export const StoryCard: React.FC<StoryCardProps> = ({ post }) => {
           {post.excerpt}
         </p>
 
-        {/* Bonus Voucher if available */}
-        {post.bonusText && (
-          <div className="mt-4 rounded-xl bg-paper px-3 py-2 text-xs font-semibold text-ink border border-border flex items-center gap-2">
-            <span className="text-sm">🎯</span>
-            <span className="truncate">{post.bonusText}</span>
-          </div>
-        )}
-
-        {/* Card Footer: Author + Link */}
+        {/* Card Footer: Author + Read Link */}
         <div className="mt-auto pt-6 border-t border-border/70 flex items-center justify-between text-xs text-muted-text">
           <div className="flex items-center gap-2.5">
-            <div className="relative h-6 w-6 rounded-full overflow-hidden bg-muted">
+            <div className="relative h-6 w-6 rounded-full overflow-hidden bg-muted border border-border">
               <Image
-                src={post.author.avatar}
+                src={post.author.avatar || "/avatars/avatar_maya_patel.jpg"}
                 alt={post.author.name}
                 fill
                 className="object-cover"
@@ -84,7 +73,7 @@ export const StoryCard: React.FC<StoryCardProps> = ({ post }) => {
             href={`/blog/${post.slug}`}
             className="font-semibold text-ink group-hover:text-orange flex items-center gap-1"
           >
-            <span>Read review</span>
+            <span>Read story</span>
             <span>→</span>
           </Link>
         </div>

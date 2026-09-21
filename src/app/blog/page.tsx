@@ -1,75 +1,131 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { StoryCard } from "@/components/public/StoryCard";
 import { TopicRibbon } from "@/components/public/TopicRibbon";
-import { INITIAL_CATEGORIES, INITIAL_POSTS } from "@/data/seedData";
+import { AdsterraBanner } from "@/components/ads/AdsterraMonetization";
+import { INITIAL_CATEGORIES, INITIAL_POSTS, Post } from "@/data/seedData";
+import { dataStore } from "@/lib/dataStore";
 
-export default function BlogArchivePage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState<"latest" | "popular" | "rating">("latest");
+function BlogArchiveContent() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || "";
+  const initialCategory = searchParams.get("category") || "all";
 
-  const filteredPosts = INITIAL_POSTS.filter((post) => {
-    const matchesSearch =
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || post.categorySlug === selectedCategory;
-    return matchesSearch && matchesCategory;
-  }).sort((a, b) => {
-    if (sortBy === "popular") return b.reads - a.reads;
-    if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
-    return 0; // latest default
-  });
+  const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [sortBy, setSortBy] = useState<"latest" | "popular" | "comments">("latest");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch("/api/posts");
+        if (res.ok) {
+          const data = await res.json();
+          const list = Array.isArray(data) ? data : Array.isArray(data?.posts) ? data.posts : [];
+          if (list.length > 0 || dataStore.isDemoCleared()) {
+            const published = list.filter((p: Post) => p.status === "published");
+            setPosts(published);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
+
+  useEffect(() => {
+    if (searchParams.get("q")) {
+      setSearchQuery(searchParams.get("q") || "");
+    }
+  }, [searchParams]);
+
+  const filteredPosts = posts
+    .filter((post) => {
+      const matchesSearch =
+        !searchQuery ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "all" || post.categorySlug === selectedCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === "popular") return b.reads - a.reads;
+      if (sortBy === "comments") return b.commentsCount - a.commentsCount;
+      return 0; // default latest order
+    });
 
   return (
-    <div className="min-h-screen bg-paper-public text-ink flex flex-col">
+    <div className="min-h-screen bg-paper-public text-ink flex flex-col selection:bg-orange/30">
       <PublicHeader />
 
-      <main className="flex-1 mx-auto w-full max-w-6xl px-6 pt-10 pb-20">
+      <main className="flex-1 mx-auto w-full max-w-6xl px-6 pt-6 pb-20">
+        {/* Top Adsterra Leaderboard Banner */}
+        <AdsterraBanner format="leaderboard" />
+
         {/* Page Header */}
         <div className="border-b border-border/80 pb-8">
           <span className="text-xs font-semibold uppercase tracking-wider text-orange">
-            The Complete Archive
+            The Complete Review Archive
           </span>
           <h1 className="mt-2 font-serif text-4xl sm:text-5xl text-ink">
-            All Reviews, Guides & Stories
+            All Reviews, Guides & Audits
           </h1>
-          <p className="mt-3 text-base text-muted-text max-w-2xl">
-            Explore our unbiased editorial breakdowns, comparison matrices, and deep dives across dating, iGaming, and digital culture.
+          <p className="mt-3 text-base text-muted-text max-w-2xl leading-relaxed">
+            Explore our comprehensive, unfiltered breakdowns across modern dating apps,
+            regulated iGaming operators, instant crypto payouts, and adult entertainment networks.
           </p>
         </div>
 
-        {/* Search & Filter Bar */}
+        {/* Search & Sort Controls */}
         <div className="my-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="relative w-full sm:w-80">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search reviews & guides..."
-              className="w-full rounded-xl bg-card px-4 py-2.5 text-sm border border-border focus:border-orange focus:outline-none shadow-xs"
+              placeholder="Search dating, casino, or adult reviews..."
+              className="w-full rounded-xl bg-card px-4 py-2.5 text-sm border border-border focus:border-orange focus:outline-none shadow-xs text-ink placeholder:text-muted-text"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-2.5 text-xs text-muted-text hover:text-ink"
+              >
+                ✕
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="rounded-xl bg-card px-3.5 py-2.5 text-xs font-semibold text-ink border border-border focus:border-orange focus:outline-none shadow-xs"
+              className="rounded-xl bg-card px-3.5 py-2.5 text-xs font-semibold text-ink border border-border focus:border-orange focus:outline-none shadow-xs cursor-pointer"
             >
-              <option value="latest">Sort: Newest First</option>
+              <option value="latest">Sort: Latest Reviews</option>
               <option value="popular">Sort: Most Read</option>
-              <option value="rating">Sort: Highest Rating</option>
+              <option value="comments">Sort: Most Discussed</option>
             </select>
           </div>
         </div>
 
-        {/* Category Filter Ribbon */}
-        <TopicRibbon categories={INITIAL_CATEGORIES} />
+        {/* Topic Ribbon */}
+        <TopicRibbon
+          categories={INITIAL_CATEGORIES}
+          activeCategory={selectedCategory === "all" ? undefined : selectedCategory}
+        />
 
         {/* Stories Grid */}
         {filteredPosts.length > 0 ? (
@@ -80,8 +136,9 @@ export default function BlogArchivePage() {
           </div>
         ) : (
           <div className="my-16 text-center py-16 rounded-2xl border border-dashed border-border bg-card">
-            <h3 className="font-serif text-xl text-ink">No reviews match your query</h3>
-            <p className="text-sm text-muted-text mt-2">
+            <span className="text-3xl block mb-2">🔍</span>
+            <h3 className="font-serif text-xl text-ink">No reviews match that query</h3>
+            <p className="text-sm text-muted-text mt-2 max-w-sm mx-auto">
               Try adjusting your search terms or selecting another category.
             </p>
             <button
@@ -89,7 +146,7 @@ export default function BlogArchivePage() {
                 setSearchQuery("");
                 setSelectedCategory("all");
               }}
-              className="mt-4 rounded-xl bg-ink px-4 py-2 text-xs font-semibold text-white"
+              className="mt-5 rounded-xl bg-navy hover:bg-navy-soft px-5 py-2 text-xs font-bold text-white shadow-button transition cursor-pointer"
             >
               Clear Filters
             </button>
@@ -99,5 +156,13 @@ export default function BlogArchivePage() {
 
       <PublicFooter />
     </div>
+  );
+}
+
+export default function BlogArchivePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-paper-public" />}>
+      <BlogArchiveContent />
+    </Suspense>
   );
 }

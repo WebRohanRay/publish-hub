@@ -18,7 +18,7 @@ export const TopicRibbon: React.FC<TopicRibbonProps> = ({
       <div className="flex items-center justify-between gap-4 overflow-x-auto no-scrollbar">
         <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-muted-text flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full bg-orange" />
-          Explore Verticals:
+          Explore the journal:
         </span>
 
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">

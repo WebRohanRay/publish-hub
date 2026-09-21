@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { dataStore } from "@/lib/dataStore";
+import { updatePostServer, deletePostServer } from "@/lib/supabaseServer";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/auth";
 
 interface RouteParams {
@@ -31,7 +32,7 @@ export async function PUT(request: Request, { params }: RouteParams) {
 
   try {
     const body = await request.json();
-    const updatedPost = dataStore.savePost({ ...body, id });
+    const updatedPost = await updatePostServer(id, body);
     return NextResponse.json({ post: updatedPost });
   } catch {
     return NextResponse.json({ error: "Failed to update post." }, { status: 500 });
@@ -48,10 +49,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
   }
 
   const { id } = await params;
-  const { searchParams } = new URL(request.url);
-  const permanent = searchParams.get("permanent") === "true";
-
-  const success = dataStore.deletePost(id, permanent);
+  const success = await deletePostServer(id);
 
   if (!success) {
     return NextResponse.json({ error: "Post not found." }, { status: 404 });

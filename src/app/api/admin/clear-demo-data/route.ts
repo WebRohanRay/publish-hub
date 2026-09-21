@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { dataStore } from "@/lib/dataStore";
+import { clearAllDemoPostsServer } from "@/lib/supabaseServer";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/auth";
 
 export async function POST() {
@@ -12,7 +12,7 @@ export async function POST() {
     return NextResponse.json({ error: "Unauthorized administrator access." }, { status: 401 });
   }
 
-  dataStore.clearDemoData();
+  await clearAllDemoPostsServer();
 
   return NextResponse.json({
     success: true,

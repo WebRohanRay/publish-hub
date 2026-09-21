@@ -24,36 +24,47 @@ export interface ActivityLog {
 const INITIAL_MEDIA: MediaAsset[] = [
   {
     id: "media-1",
-    filename: "dating_comparison_guide.jpg",
-    publicUrl: "/art/dating_comparison_guide.jpg",
-    fileSizeBytes: 742740,
+    filename: "feature_personal_ai.jpg",
+    publicUrl: "/art/feature_personal_ai.jpg",
+    fileSizeBytes: 628827,
     width: 1920,
     height: 1080,
     mimeType: "image/jpeg",
-    altText: "Dating Apps Free vs Paid comparison matrix",
+    altText: "Mint abstract illustration with green figure and orange sun",
     createdAt: "Sep 20, 2026",
   },
   {
     id: "media-2",
-    filename: "casino_betting_hero.jpg",
-    publicUrl: "/art/casino_betting_hero.jpg",
-    fileSizeBytes: 829235,
+    filename: "story_systems_thinking.jpg",
+    publicUrl: "/art/story_systems_thinking.jpg",
+    fileSizeBytes: 859834,
     width: 1920,
     height: 1080,
     mimeType: "image/jpeg",
-    altText: "Casino roulette wheel and sportsbook odds screens",
-    createdAt: "Sep 19, 2026",
+    altText: "Lavender circular artwork for systems thinking",
+    createdAt: "Sep 18, 2026",
   },
   {
     id: "media-3",
-    filename: "free_bet_bonuses.jpg",
-    publicUrl: "/art/free_bet_bonuses.jpg",
-    fileSizeBytes: 746688,
+    filename: "story_inevitable_design.jpg",
+    publicUrl: "/art/story_inevitable_design.jpg",
+    fileSizeBytes: 693852,
     width: 1920,
     height: 1080,
     mimeType: "image/jpeg",
-    altText: "VIP matched deposit bonuses and free betting voucher boxes",
-    createdAt: "Sep 18, 2026",
+    altText: "Peach geometric line artwork for design practice",
+    createdAt: "Sep 17, 2026",
+  },
+  {
+    id: "media-4",
+    filename: "story_collaboration.jpg",
+    publicUrl: "/art/story_collaboration.jpg",
+    fileSizeBytes: 759598,
+    width: 1920,
+    height: 1080,
+    mimeType: "image/jpeg",
+    altText: "Teal grid artwork for remote collaboration",
+    createdAt: "Sep 15, 2026",
   },
 ];
 
@@ -62,7 +73,7 @@ const INITIAL_ACTIVITY: ActivityLog[] = [
     id: "act-1",
     actor: "Maya Patel",
     action: "system",
-    summary: "Axiom Editorial production workspace initialized",
+    summary: "Atlas Editorial production workspace initialized",
     time: "Today, 9:00 AM",
   },
 ];
@@ -86,34 +97,34 @@ class DataStore {
   private loadFromStorage() {
     if (this.initialized) return;
     try {
-      const isCleared = localStorage.getItem("axiom_store_demo_cleared");
+      const isCleared = localStorage.getItem("atlas_store_demo_cleared") ?? localStorage.getItem("axiom_store_demo_cleared");
       if (isCleared === "true") {
         this.demoCleared = true;
         this.posts = [];
         this.comments = [];
       }
 
-      const storedPosts = localStorage.getItem("axiom_store_posts");
+      const storedPosts = localStorage.getItem("atlas_store_posts") ?? localStorage.getItem("axiom_store_posts");
       if (storedPosts) {
         this.posts = JSON.parse(storedPosts);
       }
 
-      const storedCats = localStorage.getItem("axiom_store_categories");
+      const storedCats = localStorage.getItem("atlas_store_categories") ?? localStorage.getItem("axiom_store_categories");
       if (storedCats) {
         this.categories = JSON.parse(storedCats);
       }
 
-      const storedComms = localStorage.getItem("axiom_store_comments");
+      const storedComms = localStorage.getItem("atlas_store_comments") ?? localStorage.getItem("axiom_store_comments");
       if (storedComms) {
         this.comments = JSON.parse(storedComms);
       }
 
-      const storedMedia = localStorage.getItem("axiom_store_media");
+      const storedMedia = localStorage.getItem("atlas_store_media") ?? localStorage.getItem("axiom_store_media");
       if (storedMedia) {
         this.media = JSON.parse(storedMedia);
       }
 
-      const storedAct = localStorage.getItem("axiom_store_activity");
+      const storedAct = localStorage.getItem("atlas_store_activity") ?? localStorage.getItem("axiom_store_activity");
       if (storedAct) {
         this.activity = JSON.parse(storedAct);
       }
@@ -125,12 +136,12 @@ class DataStore {
   private persist() {
     if (typeof window === "undefined") return;
     try {
-      localStorage.setItem("axiom_store_demo_cleared", this.demoCleared ? "true" : "false");
-      localStorage.setItem("axiom_store_posts", JSON.stringify(this.posts));
-      localStorage.setItem("axiom_store_categories", JSON.stringify(this.categories));
-      localStorage.setItem("axiom_store_comments", JSON.stringify(this.comments));
-      localStorage.setItem("axiom_store_media", JSON.stringify(this.media));
-      localStorage.setItem("axiom_store_activity", JSON.stringify(this.activity));
+      localStorage.setItem("atlas_store_demo_cleared", this.demoCleared ? "true" : "false");
+      localStorage.setItem("atlas_store_posts", JSON.stringify(this.posts));
+      localStorage.setItem("atlas_store_categories", JSON.stringify(this.categories));
+      localStorage.setItem("atlas_store_comments", JSON.stringify(this.comments));
+      localStorage.setItem("atlas_store_media", JSON.stringify(this.media));
+      localStorage.setItem("atlas_store_activity", JSON.stringify(this.activity));
     } catch {}
   }
 
@@ -310,6 +321,24 @@ class DataStore {
     this.loadFromStorage();
     if (!statusFilter || statusFilter === "all") return this.comments;
     return this.comments.filter((c) => c.status === statusFilter);
+  }
+
+  addComment(data: Partial<CommentItem>): CommentItem {
+    this.loadFromStorage();
+    const newComm: CommentItem = {
+      id: `comm-${Date.now()}`,
+      postId: data.postId || "general",
+      postTitle: data.postTitle || "Article Discussion",
+      authorName: data.authorName || "Reader",
+      authorEmail: data.authorEmail || "reader@atlasjournal.io",
+      body: data.body || "",
+      createdAt: "Just now",
+      status: data.status || "approved",
+    };
+    this.comments.unshift(newComm);
+    this.logActivity("comment", `New comment from ${newComm.authorName}`);
+    this.persist();
+    return newComm;
   }
 
   updateCommentStatus(

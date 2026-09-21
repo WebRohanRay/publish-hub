@@ -23,21 +23,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!post) {
     return {
-      title: "Review Not Found — Atlas Journal",
+      title: "Story Not Found — Atlas Editorial",
     };
   }
 
   const canonicalUrl = `https://publish-hub.vercel.app/blog/${post.slug}`;
 
   return {
-    title: `${post.title} — Atlas Journal`,
+    title: `${post.title} — Atlas Editorial`,
     description: post.excerpt,
     keywords: [
       post.category,
-      "review 2026",
-      "independent testing",
-      "payout speed",
-      "empirical audit",
+      "Atlas Editorial",
+      "systems thinking",
+      "editorial publication",
+      "technology essays",
       ...(post.badge ? [post.badge] : []),
     ],
     alternates: {
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: post.title,
       description: post.excerpt,
       url: canonicalUrl,
-      siteName: "Atlas Journal",
+      siteName: "Atlas Editorial",
       type: "article",
       publishedTime: "2026-09-20T00:00:00Z",
       authors: [post.author.name],
@@ -93,7 +93,7 @@ export default async function ArticlePage({ params }: PageProps) {
     notFound();
   }
 
-  const relatedPosts = INITIAL_POSTS.filter((p) => p.id !== post.id).slice(0, 2);
+  const relatedPosts = INITIAL_POSTS.filter((p) => p.id !== post.id && p.status === "published").slice(0, 2);
   const canonicalUrl = `https://publish-hub.vercel.app/blog/${post.slug}`;
 
   return (

@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { dataStore } from "@/lib/dataStore";
+import { getPostsServer, createPostServer } from "@/lib/supabaseServer";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/auth";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status") || "all";
   const search = searchParams.get("search") || undefined;
+  const category = searchParams.get("category") || undefined;
 
-  const posts = dataStore.getAllPosts({ status, search });
+  const posts = await getPostsServer({ status, search, category });
   return NextResponse.json({ posts });
 }
 
@@ -23,9 +24,9 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const createdPost = dataStore.savePost(body);
+    const createdPost = await createPostServer(body);
     return NextResponse.json({ post: createdPost }, { status: 201 });
-  } catch (err: any) {
+  } catch {
     return NextResponse.json({ error: "Failed to create post." }, { status: 500 });
   }
 }

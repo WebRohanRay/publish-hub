@@ -41,7 +41,7 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({
         )}
 
         <div className="text-xs font-semibold text-muted-text flex items-center gap-2">
-          <span>Axiom Editorial</span>
+          <span>Atlas Editorial</span>
           <span>›</span>
           <span className="text-ink font-bold">{breadcrumb}</span>
         </div>
@@ -59,7 +59,7 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({
         <Link
           href="/"
           target="_blank"
-          className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-ink shadow-xs transition hover:border-indigo-500 hover:text-indigo-600"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-ink shadow-xs transition hover:border-orange hover:text-orange"
         >
           <span>👁️</span>
           <span>View live site</span>
@@ -76,7 +76,7 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({
         </button>
 
         {/* Admin Avatar */}
-        <div className="relative h-8 w-8 rounded-full overflow-hidden border border-border bg-indigo-50 flex items-center justify-center font-bold text-xs text-ink shadow-xs">
+        <div className="relative h-8 w-8 rounded-full overflow-hidden border border-border bg-orange-soft flex items-center justify-center font-bold text-xs text-ink shadow-xs">
           <Image
             src="/avatars/avatar_maya_patel.jpg"
             alt="Admin Avatar"

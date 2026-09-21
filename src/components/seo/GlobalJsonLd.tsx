@@ -4,10 +4,10 @@ export const GlobalJsonLd: React.FC = () => {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Axiom Editorial",
-    "alternateName": ["Axiom Journal", "Axiom Review"],
+    "name": "Atlas Journal",
+    "alternateName": ["Atlas Review Hub", "Atlas Lifestyle"],
     "url": "https://publish-hub.vercel.app",
-    "description": "Independent empirical evaluations of matchmaking platforms, regulated iGaming operators, and high-performance software systems.",
+    "description": "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -22,7 +22,7 @@ export const GlobalJsonLd: React.FC = () => {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "NewsMediaOrganization",
-    "name": "Axiom Editorial",
+    "name": "Atlas Journal",
     "url": "https://publish-hub.vercel.app",
     "logo": {
       "@type": "ImageObject",
@@ -35,19 +35,19 @@ export const GlobalJsonLd: React.FC = () => {
       {
         "@type": "Person",
         "name": "Maya Patel",
-        "jobTitle": "Lead Systems Auditor & Editor-in-Chief"
+        "jobTitle": "Lead Reviewer & Editor-in-Chief"
       }
     ],
-    "publishingPrinciples": "https://publish-hub.vercel.app/editorial-standards",
-    "correctionsPolicy": "https://publish-hub.vercel.app/editorial-standards#corrections",
     "knowsAbout": [
-      "Digital Matchmaking Algorithms",
-      "Regulated iGaming Compliance",
-      "Payment Processing Velocity",
-      "Software Ergonomics & Dark Pattern Detection"
+      "Online Dating Algorithms",
+      "Matchmaking Platform Safety",
+      "Regulated iGaming & Casino Licensing",
+      "Instant Crypto Payout Protocols",
+      "Adult Entertainment & Webcam Tech",
+      "Discreet Billing & Privacy Protection"
     ],
     "sameAs": [
-      "https://twitter.com/AxiomEditorialHQ",
+      "https://twitter.com/AtlasJournalHQ",
       "https://github.com/WebRohanRay/publish-hub"
     ]
   };

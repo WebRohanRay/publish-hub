@@ -3,8 +3,10 @@ import {
   createSessionToken,
   ADMIN_DEFAULT_EMAIL,
   ADMIN_DEFAULT_PASSWORD,
+  ADMIN_EMAIL_ALIASES,
   COOKIE_NAME,
 } from "@/lib/auth";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
@@ -20,12 +22,40 @@ export async function POST(request: Request) {
 
     const normalizedEmail = email.trim().toLowerCase();
     const expectedEmail = ADMIN_DEFAULT_EMAIL.trim().toLowerCase();
+    const validEmails = [expectedEmail, ...ADMIN_EMAIL_ALIASES.map((e) => e.toLowerCase())];
 
-    // Check against configured admin credentials
-    if (
-      normalizedEmail !== expectedEmail ||
-      password !== ADMIN_DEFAULT_PASSWORD
-    ) {
+    let isAuthenticated = false;
+    let userName = "Maya Patel";
+    let userRole = "administrator";
+
+    // 1. Check Supabase Auth if configured
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: normalizedEmail,
+          password,
+        });
+
+        if (!error && data?.user) {
+          isAuthenticated = true;
+          userName = data.user.user_metadata?.display_name || data.user.email?.split("@")[0] || "Maya Patel";
+        }
+      } catch {
+        // Fallback to credentials check
+      }
+    }
+
+    // 2. Check against configured admin credentials / fallback
+    if (!isAuthenticated) {
+      if (
+        validEmails.includes(normalizedEmail) &&
+        password === ADMIN_DEFAULT_PASSWORD
+      ) {
+        isAuthenticated = true;
+      }
+    }
+
+    if (!isAuthenticated) {
       return NextResponse.json(
         { error: "Invalid administrator credentials. Please check your email and password." },
         { status: 401 }
@@ -40,8 +70,8 @@ export async function POST(request: Request) {
       message: "Authentication successful.",
       user: {
         email: normalizedEmail,
-        name: "Maya Patel",
-        role: "administrator",
+        name: userName,
+        role: userRole,
       },
     });
 
@@ -57,7 +87,7 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch (err: any) {
+  } catch {
     return NextResponse.json(
       { error: "Internal authentication error." },
       { status: 500 }

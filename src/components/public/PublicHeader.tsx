@@ -2,161 +2,171 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { AxiomLogo } from "@/components/brand/AxiomLogo";
+import { AtlasLogo } from "@/components/brand/AtlasLogo";
 import { LanguageSwitcher } from "@/components/brand/LanguageSwitcher";
-import { useI18n } from "@/lib/i18n";
 
 export const PublicHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { t } = useI18n();
 
   return (
     <>
-      {/* Top Regulatory & Empirical Audit Bar */}
-      <div className="bg-slate-950 text-[11px] text-slate-300 py-1.5 px-4 text-center border-b border-slate-800">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs">
-          <span className="flex items-center gap-2 truncate">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="font-semibold text-white">Empirical Audits:</span> 48-Point Independent Testing Protocol Across All Verticals.
-          </span>
-          <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-slate-400 text-[11px]">
-              18+ Only • Play & Date Responsibly
-            </span>
-            <LanguageSwitcher isDark={true} />
-          </div>
-        </div>
-      </div>
-
-      {/* Main Sticky Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-white/90 backdrop-blur-md transition-all shadow-xs">
+      <header className="fixed top-0 inset-x-0 z-50 w-full border-b border-border/80 bg-paper-public/95 backdrop-blur-md shadow-xs">
         <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-6">
-          {/* Logo & Desktop Nav */}
+          {/* Brand Logo & Desktop Navigation */}
           <div className="flex items-center gap-8">
-            <AxiomLogo href="/" />
+            <AtlasLogo href="/" />
 
-            <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
+            <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-ink">
               <Link
                 href="/category/dating"
-                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
+                className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                {t.nav.dating}
+                Dating & Matchmaking
               </Link>
               <Link
-                href="/category/igaming-betting"
-                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
+                href="/category/gambling-casino"
+                className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                {t.nav.casino}
+                Casino & Betting
               </Link>
               <Link
-                href="/research"
-                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
+                href="/category/adult-lifestyle"
+                className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                2026 Research
+                Adult Entertainment
               </Link>
               <Link
-                href="/methodology"
-                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
+                href="/category/guides-security"
+                className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                Testing Protocol
+                Privacy & Crypto
               </Link>
               <Link
                 href="/blog"
-                className="transition-colors hover:text-indigo-600 hover:underline decoration-indigo-500 decoration-2 underline-offset-8"
+                className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                {t.nav.reviews}
+                All Blogs
               </Link>
             </nav>
           </div>
 
-          {/* Right Actions */}
+          {/* Right Actions: Language Switcher + EXACTLY ONE Admin Button */}
           <div className="flex items-center gap-3">
-            {/* Direct Admin Access */}
+            <div className="hidden sm:block">
+              <LanguageSwitcher />
+            </div>
+
+            {/* Exactly ONE Admin Button where everything is managed */}
             <Link
               href="/admin"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-paper px-3.5 py-1.5 text-xs font-semibold text-ink shadow-xs transition hover:border-indigo-500 hover:text-indigo-600"
+              className="inline-flex items-center gap-2 rounded-xl bg-navy hover:bg-navy-soft px-4 py-2 text-xs sm:text-sm font-bold text-white shadow-button hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
+              aria-label="Open Admin Dashboard"
             >
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span>Admin Portal</span>
+              <svg
+                className="w-4 h-4 text-orange"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
+              </svg>
+              <span>Admin</span>
             </Link>
 
-            {/* Subscribe CTA button */}
-            <a
-              href="#newsletter"
-              className="hidden sm:inline-flex items-center justify-center rounded-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 text-xs font-bold shadow-button transition"
-            >
-              {t.nav.subscribe}
-            </a>
-
-            {/* Mobile Menu Button */}
+            {/* Mobile Hamburger Drawer Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-ink rounded-lg hover:bg-muted cursor-pointer"
-              aria-label="Toggle Navigation"
+              className="lg:hidden p-2 text-ink rounded-lg hover:bg-muted cursor-pointer transition"
+              aria-label="Toggle Navigation Menu"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
                 )}
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Mobile dropdown */}
+        {/* Responsive Mobile Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-border bg-white px-6 py-4 space-y-3 animate-in fade-in slide-in-from-top-2 shadow-lg">
-            <Link
-              href="/category/dating"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink hover:text-indigo-600"
-            >
-              {t.nav.dating}
-            </Link>
-            <Link
-              href="/category/igaming-betting"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink hover:text-indigo-600"
-            >
-              {t.nav.casino}
-            </Link>
-            <Link
-              href="/research"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink hover:text-indigo-600"
-            >
-              2026 Research Hub
-            </Link>
-            <Link
-              href="/methodology"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink hover:text-indigo-600"
-            >
-              Testing Protocol
-            </Link>
-            <Link
-              href="/blog"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-ink hover:text-indigo-600"
-            >
-              {t.nav.reviews}
-            </Link>
-            <div className="pt-2 border-t border-border flex items-center justify-between">
-              <span className="text-xs text-muted-text">Change Language:</span>
+          <div className="lg:hidden border-b border-border bg-card px-6 py-5 space-y-4 shadow-xl animate-in fade-in slide-in-from-top-2">
+            <div className="flex flex-col space-y-3 font-medium text-ink text-sm">
+              <Link
+                href="/category/dating"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 hover:text-orange transition-colors"
+              >
+                Dating & Matchmaking
+              </Link>
+              <Link
+                href="/category/gambling-casino"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 hover:text-orange transition-colors"
+              >
+                Casino & Sports Betting
+              </Link>
+              <Link
+                href="/category/adult-lifestyle"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 hover:text-orange transition-colors"
+              >
+                Adult Entertainment & Creators
+              </Link>
+              <Link
+                href="/category/guides-security"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 hover:text-orange transition-colors"
+              >
+                Privacy, Crypto & Guides
+              </Link>
+              <Link
+                href="/blog"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-1 hover:text-orange transition-colors"
+              >
+                All Blogs
+              </Link>
+            </div>
+
+            <div className="pt-3 border-t border-border flex items-center justify-between">
+              <span className="text-xs text-muted-text">Edition Language</span>
               <LanguageSwitcher />
             </div>
-            <Link
-              href="/admin"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-semibold text-indigo-600 pt-1"
-            >
-              Open Admin Dashboard →
-            </Link>
+
+            <div className="pt-2">
+              <Link
+                href="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-navy hover:bg-navy-soft text-white font-bold py-2.5 text-sm shadow-button transition"
+              >
+                <span>🛡️ Open Admin Workspace</span>
+                <span>→</span>
+              </Link>
+            </div>
           </div>
         )}
       </header>
+
+      {/* Scroll Offset Spacer to prevent jitter and content overlap */}
+      <div className="h-18 w-full shrink-0" aria-hidden="true" />
     </>
   );
 };

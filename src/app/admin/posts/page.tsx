@@ -123,7 +123,7 @@ export default function AdminPostsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-6">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-orange">
             Publishing
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl text-ink font-normal mt-0.5">
@@ -158,7 +158,7 @@ export default function AdminPostsPage() {
 
           <Link
             href="/admin/posts/new"
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-5 py-2.5 text-xs font-bold text-white shadow-button transition active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-xl bg-orange hover:bg-orange/90 px-5 py-2.5 text-xs font-bold text-ink shadow-button transition active:scale-[0.98]"
           >
             <span>+</span>
             <span>New review post</span>
@@ -176,7 +176,7 @@ export default function AdminPostsPage() {
               onClick={() => setActiveTab(tab.value)}
               className={`rounded-xl px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition ${
                 activeTab === tab.value
-                  ? "bg-slate-900 text-white font-bold"
+                  ? "bg-navy text-white font-bold"
                   : "text-muted-text hover:bg-card hover:text-ink"
               }`}
             >
@@ -193,7 +193,7 @@ export default function AdminPostsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search posts, tags, categories..."
-            className="w-full rounded-xl bg-card px-3.5 py-2 text-xs border border-border focus:border-indigo-500 focus:outline-none shadow-xs"
+            className="w-full rounded-xl bg-card px-3.5 py-2 text-xs border border-border focus:border-orange focus:outline-none shadow-xs"
           />
         </div>
       </div>
@@ -231,7 +231,7 @@ export default function AdminPostsPage() {
                         <div>
                           <Link
                             href={`/admin/posts/edit/${post.id}`}
-                            className="font-semibold text-ink hover:text-indigo-600 transition line-clamp-1"
+                            className="font-semibold text-ink hover:text-orange transition line-clamp-1"
                           >
                             {post.title}
                           </Link>
@@ -297,7 +297,7 @@ export default function AdminPostsPage() {
                         </button>
                         <Link
                           href={`/admin/posts/edit/${post.id}`}
-                          className="rounded-lg p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-paper transition"
+                          className="rounded-lg p-1.5 text-slate-400 hover:text-orange hover:bg-paper transition"
                           title="Edit article"
                         >
                           ✏️
@@ -317,7 +317,7 @@ export default function AdminPostsPage() {
                 <tr>
                   <td colSpan={7} className="py-16 text-center text-muted-text">
                     <div className="max-w-md mx-auto space-y-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mx-auto font-bold text-xl">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-soft text-orange mx-auto font-bold text-xl">
                         ✍
                       </div>
                       <div className="font-bold text-ink text-base">
@@ -334,7 +334,7 @@ export default function AdminPostsPage() {
                         <div className="pt-2">
                           <Link
                             href="/admin/posts/new"
-                            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 text-xs font-bold shadow-button"
+                            className="inline-flex items-center gap-2 rounded-xl bg-orange hover:bg-orange/90 text-ink px-5 py-2.5 text-xs font-bold shadow-button"
                           >
                             <span>+</span>
                             <span>Create Your First Article</span>
