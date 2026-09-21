@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { PublicHeader } from "@/components/public/PublicHeader";
-import { FeatureStory } from "@/components/public/FeatureStory";
+import { HeroCreative } from "@/components/public/HeroCreative";
 import { TopicRibbon } from "@/components/public/TopicRibbon";
 import { StoryCard } from "@/components/public/StoryCard";
 import { ComparisonTable } from "@/components/public/ComparisonTable";
@@ -14,33 +14,15 @@ import { useI18n } from "@/lib/i18n";
 
 export default function HomePage() {
   const { t } = useI18n();
-  const featurePost = INITIAL_POSTS[0];
   const latestPosts = INITIAL_POSTS.slice(1, 4);
 
   return (
     <div className="min-h-screen bg-paper-public text-ink flex flex-col selection:bg-orange/30">
       <PublicHeader />
 
-      <main className="flex-1 mx-auto w-full max-w-6xl px-6 pt-8 pb-16">
-        {/* Editorial Hero Statement */}
-        <section className="pt-8 pb-4">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-text">
-            <span className="h-2 w-2 rounded-full bg-orange" />
-            <span>{t.hero.kicker}</span>
-          </div>
-
-          <h1 className="mt-3 font-serif text-4xl sm:text-6xl lg:text-7xl font-normal leading-[0.96] text-ink tracking-tight max-w-4xl">
-            {t.hero.titleStart}
-            <span className="italic font-serif text-orange">{t.hero.titleEmphasis}</span>
-          </h1>
-
-          <p className="mt-5 text-base sm:text-lg text-muted-text max-w-2xl leading-relaxed">
-            {t.hero.subtitle}
-          </p>
-        </section>
-
-        {/* Top Feature Story */}
-        <FeatureStory post={featurePost} />
+      <main className="flex-1 mx-auto w-full max-w-6xl px-6 pt-2 pb-16">
+        {/* Creative Interactive Hero Section */}
+        <HeroCreative />
 
         {/* High Converting Comparison Table */}
         <ComparisonTable />
