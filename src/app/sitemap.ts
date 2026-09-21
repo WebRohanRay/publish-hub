@@ -3,55 +3,108 @@ import { INITIAL_POSTS, INITIAL_CATEGORIES } from "@/data/seedData";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://publish-hub.vercel.app";
+  const now = new Date();
 
-  // Static routes
+  const getAlternates = (path: string) => ({
+    languages: {
+      "en-US": `${baseUrl}${path}?lang=en`,
+      "es-ES": `${baseUrl}${path}?lang=es`,
+      "de-DE": `${baseUrl}${path}?lang=de`,
+      "fr-FR": `${baseUrl}${path}?lang=fr`,
+      "x-default": `${baseUrl}${path}`,
+    },
+  });
+
+  // Static authority & core routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "daily",
       priority: 1.0,
+      alternates: getAlternates(""),
     },
     {
       url: `${baseUrl}/blog`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "daily",
       priority: 0.9,
+      alternates: getAlternates("/blog"),
+    },
+    {
+      url: `${baseUrl}/research`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+      alternates: getAlternates("/research"),
+    },
+    {
+      url: `${baseUrl}/methodology`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+      alternates: getAlternates("/methodology"),
+    },
+    {
+      url: `${baseUrl}/editorial-standards`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+      alternates: getAlternates("/editorial-standards"),
+    },
+    {
+      url: `${baseUrl}/press`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+      alternates: getAlternates("/press"),
     },
     {
       url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+      alternates: getAlternates("/about"),
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 0.5,
+      alternates: getAlternates("/contact"),
     },
     {
       url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 0.3,
+      alternates: getAlternates("/privacy"),
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "monthly",
       priority: 0.3,
+      alternates: getAlternates("/terms"),
     },
   ];
 
   // Category routes
   const categoryRoutes: MetadataRoute.Sitemap = INITIAL_CATEGORIES.map((cat) => ({
     url: `${baseUrl}/category/${cat.slug}`,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: "weekly",
     priority: 0.8,
+    alternates: getAlternates(`/category/${cat.slug}`),
   }));
 
   // Post routes
   const postRoutes: MetadataRoute.Sitemap = INITIAL_POSTS.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: new Date(),
+    lastModified: now,
     changeFrequency: "weekly",
-    priority: 0.9,
+    priority: 0.95,
+    alternates: getAlternates(`/blog/${post.slug}`),
   }));
 
   return [...staticRoutes, ...categoryRoutes, ...postRoutes];

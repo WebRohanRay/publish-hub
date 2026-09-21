@@ -57,7 +57,7 @@ export const PublicFooter: React.FC = () => {
             </ul>
           </div>
 
-          {/* Publication Links */}
+          {/* Publication & Research Links */}
           <div className="md:col-span-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-ink mb-4">
               {t.footer.publicationTitle}
@@ -66,6 +66,26 @@ export const PublicFooter: React.FC = () => {
               <li>
                 <Link href="/about" className="hover:text-orange transition-colors">
                   About the Journal
+                </Link>
+              </li>
+              <li>
+                <Link href="/methodology" className="hover:text-orange transition-colors">
+                  Testing Protocol
+                </Link>
+              </li>
+              <li>
+                <Link href="/editorial-standards" className="hover:text-orange transition-colors">
+                  Editorial Ethics
+                </Link>
+              </li>
+              <li>
+                <Link href="/research" className="hover:text-orange transition-colors">
+                  2026 Benchmark Data
+                </Link>
+              </li>
+              <li>
+                <Link href="/press" className="hover:text-orange transition-colors">
+                  Press & Citations
                 </Link>
               </li>
               <li>

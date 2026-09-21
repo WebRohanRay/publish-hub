@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
 import { I18nProvider } from "@/lib/i18n";
+import { GlobalJsonLd } from "@/components/seo/GlobalJsonLd";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -55,6 +56,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmSerif.variable} ${dmSans.variable}`}>
+      <head>
+        <GlobalJsonLd />
+      </head>
       <body className="antialiased font-sans text-ink bg-paper selection:bg-orange/30 selection:text-ink">
         <I18nProvider>{children}</I18nProvider>
       </body>
