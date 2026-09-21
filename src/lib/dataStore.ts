@@ -55,61 +55,26 @@ const INITIAL_MEDIA: MediaAsset[] = [
     altText: "VIP matched deposit bonuses and free betting voucher boxes",
     createdAt: "Sep 18, 2026",
   },
-  {
-    id: "media-4",
-    filename: "dating_apps_hero.jpg",
-    publicUrl: "/art/dating_apps_hero.jpg",
-    fileSizeBytes: 650822,
-    width: 1920,
-    height: 1080,
-    mimeType: "image/jpeg",
-    altText: "Modern smartphones with verified dating app profiles",
-    createdAt: "Sep 17, 2026",
-  },
-  {
-    id: "media-5",
-    filename: "atlas_social_card.jpg",
-    publicUrl: "/art/atlas_social_card.jpg",
-    fileSizeBytes: 694776,
-    width: 1200,
-    height: 630,
-    mimeType: "image/jpeg",
-    altText: "Atlas Editorial signature social card",
-    createdAt: "Sep 15, 2026",
-  },
 ];
 
 const INITIAL_ACTIVITY: ActivityLog[] = [
   {
     id: "act-1",
     actor: "Maya Patel",
-    action: "published",
-    summary: "Published review 'Best Dating Apps of 2026: Free vs. VIP Breakdown'",
-    time: "Today, 9:42 AM",
-  },
-  {
-    id: "act-2",
-    actor: "Maya Patel",
-    action: "moderated",
-    summary: "Approved 8 reader comments across 3 reviews",
-    time: "Yesterday, 4:18 PM",
-  },
-  {
-    id: "act-3",
-    actor: "Maya Patel",
-    action: "updated",
-    summary: "Updated bonus terms on 'VIP Betting Vouchers'",
-    time: "Yesterday, 11:06 AM",
+    action: "system",
+    summary: "Axiom Editorial production workspace initialized",
+    time: "Today, 9:00 AM",
   },
 ];
 
-// In-Memory store for synchronous operations with localStorage persistence
+// Universal High-Performance DataStore with Zero Forced Seed Data Re-injection
 class DataStore {
   private posts: Post[] = [...INITIAL_POSTS];
   private categories: Category[] = [...INITIAL_CATEGORIES];
   private comments: CommentItem[] = [...INITIAL_COMMENTS];
   private media: MediaAsset[] = [...INITIAL_MEDIA];
   private activity: ActivityLog[] = [...INITIAL_ACTIVITY];
+  private demoCleared = false;
   private initialized = false;
 
   constructor() {
@@ -121,20 +86,37 @@ class DataStore {
   private loadFromStorage() {
     if (this.initialized) return;
     try {
-      const storedPosts = localStorage.getItem("atlas_store_posts");
-      if (storedPosts) this.posts = JSON.parse(storedPosts);
+      const isCleared = localStorage.getItem("axiom_store_demo_cleared");
+      if (isCleared === "true") {
+        this.demoCleared = true;
+        this.posts = [];
+        this.comments = [];
+      }
 
-      const storedCats = localStorage.getItem("atlas_store_categories");
-      if (storedCats) this.categories = JSON.parse(storedCats);
+      const storedPosts = localStorage.getItem("axiom_store_posts");
+      if (storedPosts) {
+        this.posts = JSON.parse(storedPosts);
+      }
 
-      const storedComms = localStorage.getItem("atlas_store_comments");
-      if (storedComms) this.comments = JSON.parse(storedComms);
+      const storedCats = localStorage.getItem("axiom_store_categories");
+      if (storedCats) {
+        this.categories = JSON.parse(storedCats);
+      }
 
-      const storedMedia = localStorage.getItem("atlas_store_media");
-      if (storedMedia) this.media = JSON.parse(storedMedia);
+      const storedComms = localStorage.getItem("axiom_store_comments");
+      if (storedComms) {
+        this.comments = JSON.parse(storedComms);
+      }
 
-      const storedAct = localStorage.getItem("atlas_store_activity");
-      if (storedAct) this.activity = JSON.parse(storedAct);
+      const storedMedia = localStorage.getItem("axiom_store_media");
+      if (storedMedia) {
+        this.media = JSON.parse(storedMedia);
+      }
+
+      const storedAct = localStorage.getItem("axiom_store_activity");
+      if (storedAct) {
+        this.activity = JSON.parse(storedAct);
+      }
 
       this.initialized = true;
     } catch {}
@@ -143,12 +125,36 @@ class DataStore {
   private persist() {
     if (typeof window === "undefined") return;
     try {
-      localStorage.setItem("atlas_store_posts", JSON.stringify(this.posts));
-      localStorage.setItem("atlas_store_categories", JSON.stringify(this.categories));
-      localStorage.setItem("atlas_store_comments", JSON.stringify(this.comments));
-      localStorage.setItem("atlas_store_media", JSON.stringify(this.media));
-      localStorage.setItem("atlas_store_activity", JSON.stringify(this.activity));
+      localStorage.setItem("axiom_store_demo_cleared", this.demoCleared ? "true" : "false");
+      localStorage.setItem("axiom_store_posts", JSON.stringify(this.posts));
+      localStorage.setItem("axiom_store_categories", JSON.stringify(this.categories));
+      localStorage.setItem("axiom_store_comments", JSON.stringify(this.comments));
+      localStorage.setItem("axiom_store_media", JSON.stringify(this.media));
+      localStorage.setItem("axiom_store_activity", JSON.stringify(this.activity));
     } catch {}
+  }
+
+  // --- DEMO DATA MANAGEMENT ---
+  clearDemoData(): void {
+    this.posts = [];
+    this.comments = [];
+    this.demoCleared = true;
+    this.logActivity("cleared", "Wiped all dummy demo articles for clean production launch");
+    this.persist();
+  }
+
+  resetToCuratedData(): void {
+    this.posts = [...INITIAL_POSTS];
+    this.categories = [...INITIAL_CATEGORIES];
+    this.comments = [...INITIAL_COMMENTS];
+    this.demoCleared = false;
+    this.logActivity("reset", "Restored curated evaluation templates");
+    this.persist();
+  }
+
+  isDemoCleared(): boolean {
+    this.loadFromStorage();
+    return this.demoCleared;
   }
 
   // --- POSTS ---
@@ -183,7 +189,7 @@ class DataStore {
   savePost(postData: Partial<Post>): Post {
     this.loadFromStorage();
     if (postData.id) {
-      // Update
+      // Update existing
       const index = this.posts.findIndex((p) => p.id === postData.id);
       if (index !== -1) {
         this.posts[index] = { ...this.posts[index], ...postData } as Post;
@@ -193,10 +199,10 @@ class DataStore {
       }
     }
 
-    // Create New
+    // Create New Post
     const newPost: Post = {
       id: `post-${Date.now()}`,
-      title: postData.title || "Untitled Post",
+      title: postData.title || "Untitled Investigation",
       slug:
         postData.slug ||
         (postData.title || "untitled")
@@ -206,29 +212,29 @@ class DataStore {
       excerpt: postData.excerpt || "",
       category: postData.category || "Dating & Matchmaking",
       categorySlug: postData.categorySlug || "dating",
-      status: (postData.status as any) || "draft",
+      status: (postData.status as any) || "published",
       readingTime: postData.readingTime || "5 min read",
-      image: postData.image || "/art/feature_personal_ai.jpg",
+      image: postData.image || "/art/dating_comparison_guide.jpg",
       reads: 0,
       likes: 0,
       commentsCount: 0,
       publishedAt: postData.status === "published" ? "Published today" : "Draft",
-      rating: postData.rating || 4.8,
-      badge: postData.badge || "New Review",
+      rating: postData.rating || 9.2,
+      badge: postData.badge || "Verified Audit",
       bonusText: postData.bonusText,
       affiliateUrl: postData.affiliateUrl,
-      pros: postData.pros || [],
-      cons: postData.cons || [],
+      pros: postData.pros || ["Audited licensing & regulatory compliance", "Fast payout turnaround"],
+      cons: postData.cons || ["Identity KYC verification mandatory"],
       author: {
         name: "Maya Patel",
         avatar: "/avatars/avatar_maya_patel.jpg",
-        role: "Editor-in-Chief",
+        role: "Lead Systems Auditor",
       },
       content: postData.content || "",
     };
 
     this.posts.unshift(newPost);
-    this.logActivity("created", `Created new article: '${newPost.title}'`);
+    this.logActivity("created", `Published new article: '${newPost.title}'`);
     this.persist();
     return newPost;
   }
