@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonicalUrl = `https://publish-hub.vercel.app/category/${category.slug}`;
 
   return {
-    title: `${category.name} — Atlas Editorial`,
+    title: `${category.name} — NoxWire`,
     description: category.description,
     alternates: {
       canonical: canonicalUrl,
@@ -45,14 +45,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     },
     openGraph: {
-      title: `${category.name} — Atlas Editorial`,
+      title: `${category.name} — NoxWire`,
       description: category.description,
       url: canonicalUrl,
-      siteName: "Atlas Editorial",
+      siteName: "NoxWire",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${category.name} — Atlas Editorial`,
+      title: `${category.name} — NoxWire`,
       description: category.description,
     },
     robots: {
@@ -78,7 +78,7 @@ export default async function CategoryArchivePage({ params }: PageProps) {
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": `${currentCategory.name} — Atlas Editorial`,
+    "name": `${currentCategory.name} — NoxWire`,
     "description": currentCategory.description,
     "url": `https://publish-hub.vercel.app/category/${currentCategory.slug}`,
     "hasPart": categoryPosts.map((p) => ({

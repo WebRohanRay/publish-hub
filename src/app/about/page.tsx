@@ -3,8 +3,8 @@ import { PublicHeader } from "@/components/public/PublicHeader";
 import { PublicFooter } from "@/components/public/PublicFooter";
 
 export const metadata = {
-  title: "About the Journal — Atlas Editorial",
-  description: "Our review standards, editorial independence, and evaluation methodology.",
+  title: "About the Publication — NoxWire",
+  description: "Our review standards, editorial independence, and testing methodology across dating, gaming, and privacy tech.",
 };
 
 export default function AboutPage() {
@@ -14,15 +14,15 @@ export default function AboutPage() {
 
       <main className="flex-1 mx-auto w-full max-w-3xl px-6 pt-12 pb-20">
         <span className="text-xs font-semibold uppercase tracking-wider text-orange">
-          About Atlas
+          About NoxWire
         </span>
         <h1 className="mt-2 font-serif text-4xl sm:text-5xl text-ink">
-          Editorial Restraint & Honest Intelligence
+          Unfiltered Reviews & Technical Intelligence
         </h1>
 
         <div className="mt-8 prose prose-slate max-w-none text-muted-text space-y-6 text-base sm:text-lg leading-relaxed">
           <p>
-            Atlas is an independent digital publication dedicated to testing and reviewing modern matchmaking platforms, regulated iGaming systems, and digital tools shaping human interaction.
+            NoxWire is an independent publication dedicated to stress-testing modern matchmaking apps, regulated online casinos, adult creator platforms, and financial privacy technologies.
           </p>
           <h2 className="font-serif text-2xl text-ink mt-6">Our Independence Principles</h2>
           <p>

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const validEmails = [expectedEmail, ...ADMIN_EMAIL_ALIASES.map((e) => e.toLowerCase())];
 
     let isAuthenticated = false;
-    let userName = "Maya Patel";
+    let userName = normalizedEmail.includes("rohan") ? "Rohan Ray" : "Maya Patel";
     let userRole = "administrator";
 
     // 1. Check Supabase Auth if configured

@@ -5,34 +5,63 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- 1. Profiles (Single Admin Model)
+-- 1. Profiles (Admin Model)
 CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  display_name TEXT NOT NULL DEFAULT 'Maya Patel',
-  avatar_url TEXT,
+  display_name TEXT NOT NULL DEFAULT 'Rohan Ray',
+  avatar_url TEXT DEFAULT '/avatars/avatar_maya_patel.jpg',
   is_admin BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
+-- Auto-grant admin role to webrohanray@gmail.com on sign-up / auth creation
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, display_name, avatar_url, is_admin)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'display_name', 'Rohan Ray'),
+    COALESCE(NEW.raw_user_meta_data->>'avatar_url', '/avatars/avatar_maya_patel.jpg'),
+    CASE 
+      WHEN LOWER(NEW.email) IN ('webrohanray@gmail.com', 'admin@noxwire.io') THEN true 
+      ELSE false 
+    END
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    display_name = EXCLUDED.display_name,
+    is_admin = CASE 
+      WHEN LOWER(NEW.email) IN ('webrohanray@gmail.com', 'admin@noxwire.io') THEN true 
+      ELSE public.profiles.is_admin 
+    END;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT OR UPDATE ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
 -- 2. Site Settings (Single record with key = 'default')
 CREATE TABLE IF NOT EXISTS public.site_settings (
   key TEXT PRIMARY KEY DEFAULT 'default',
-  site_name TEXT NOT NULL DEFAULT 'Atlas Journal',
+  site_name TEXT NOT NULL DEFAULT 'NoxWire',
   logo_url TEXT,
   favicon_url TEXT,
-  description TEXT DEFAULT 'An independent weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.',
-  contact_email TEXT DEFAULT 'editorial@atlasjournal.io',
+  description TEXT DEFAULT 'The Unfiltered Journal of Dating, iGaming & Adult Tech. Real benchmarks, algorithmic breakdowns, payout testing, and privacy guides.',
+  contact_email TEXT DEFAULT 'editor@noxwire.io',
   featured_post_id UUID,
-  latest_post_count INTEGER NOT NULL DEFAULT 3,
-  popular_post_count INTEGER NOT NULL DEFAULT 3,
+  latest_post_count INTEGER NOT NULL DEFAULT 4,
+  popular_post_count INTEGER NOT NULL DEFAULT 4,
   comments_enabled BOOLEAN NOT NULL DEFAULT true,
   comments_require_moderation BOOLEAN NOT NULL DEFAULT true,
   allow_guest_comments BOOLEAN NOT NULL DEFAULT true,
-  default_meta_title TEXT DEFAULT 'Atlas Journal — Ideas that make tomorrow clearer',
-  default_meta_description TEXT DEFAULT 'Curated reviews, independent intelligence, and deep dives.',
-  default_social_image_url TEXT DEFAULT '/art/atlas_social_card.jpg',
-  social_links JSONB DEFAULT '{"x": "https://x.com/atlasjournal", "linkedin": "https://linkedin.com"}'::jsonb,
+  default_meta_title TEXT DEFAULT 'NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech',
+  default_meta_description TEXT DEFAULT 'Independent reviews and technical breakdowns of dating platforms, online crypto casinos, adult entertainment networks, and financial privacy stacks.',
+  default_social_image_url TEXT DEFAULT '/art/dating_comparison_guide.jpg',
+  social_links JSONB DEFAULT '{"x": "https://x.com/noxwire", "telegram": "https://t.me/noxwire"}'::jsonb,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 

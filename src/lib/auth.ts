@@ -3,15 +3,16 @@
 const SECRET_KEY =
   process.env.ADMIN_SESSION_SECRET || "atlas-journal-super-secret-key-2026-secure";
 export const ADMIN_DEFAULT_EMAIL =
-  process.env.ADMIN_EMAIL || "maya.patel@atlasjournal.io";
+  process.env.ADMIN_EMAIL || "webrohanray@gmail.com";
 export const ADMIN_DEFAULT_PASSWORD =
-  process.env.ADMIN_PASSWORD || "atlas2026!";
+  process.env.ADMIN_PASSWORD || "Rohanray@12345";
 
 // Additional aliases for administrator convenience
 export const ADMIN_EMAIL_ALIASES = [
-  "admin@atlasjournal.io",
-  "editorial@atlasjournal.io",
-  "admin@publishhub.io",
+  "webrohanray@gmail.com",
+  "admin@noxwire.io",
+  "editorial@noxwire.io",
+  "maya.patel@atlasjournal.io",
 ];
 
 export const COOKIE_NAME = "atlas_admin_session";

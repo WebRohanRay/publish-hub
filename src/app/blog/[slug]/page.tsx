@@ -23,21 +23,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!post) {
     return {
-      title: "Story Not Found — Atlas Editorial",
+      title: "Review Not Found — NoxWire",
     };
   }
 
   const canonicalUrl = `https://publish-hub.vercel.app/blog/${post.slug}`;
 
   return {
-    title: `${post.title} — Atlas Editorial`,
+    title: `${post.title} — NoxWire`,
     description: post.excerpt,
     keywords: [
       post.category,
-      "Atlas Editorial",
-      "systems thinking",
-      "editorial publication",
-      "technology essays",
+      "NoxWire",
+      "dating app reviews",
+      "crypto casino payouts",
+      "adult entertainment tech",
+      "privacy guides",
       ...(post.badge ? [post.badge] : []),
     ],
     alternates: {
@@ -54,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: post.title,
       description: post.excerpt,
       url: canonicalUrl,
-      siteName: "Atlas Editorial",
+      siteName: "NoxWire",
       type: "article",
       publishedTime: "2026-09-20T00:00:00Z",
       authors: [post.author.name],
@@ -73,7 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: post.title,
       description: post.excerpt,
       images: [post.image],
-      creator: "@AtlasJournalHQ",
+      creator: "@NoxWireHQ",
     },
     robots: {
       index: true,

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AdsterraBanner } from "@/components/ads/AdsterraMonetization";
+import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
 import { Post } from "@/data/seedData";
 
 interface ArticleInteractiveViewProps {
@@ -199,11 +200,9 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
       </div>
 
       {/* Rich Article Body Content */}
-      <article className="prose prose-slate max-w-none text-ink text-base sm:text-lg leading-relaxed space-y-6">
+      <article className="max-w-none text-ink text-base sm:text-lg leading-relaxed">
         {post.content ? (
-          <div className="whitespace-pre-line text-ink leading-relaxed">
-            {post.content}
-          </div>
+          <MarkdownRenderer content={post.content} />
         ) : (
           <div className="space-y-6">
             <p>
