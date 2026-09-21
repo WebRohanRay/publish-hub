@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, DM_Sans } from "next/font/google";
+import { I18nProvider } from "@/lib/i18n";
 import "./globals.css";
 
 const dmSerif = DM_Serif_Display({
@@ -22,6 +23,16 @@ export const metadata: Metadata = {
   title: "Atlas Journal — Ideas that make tomorrow clearer",
   description:
     "Atlas is a weekly editorial journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional digital tools.",
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/?lang=en",
+      "es-ES": "/?lang=es",
+      "de-DE": "/?lang=de",
+      "fr-FR": "/?lang=fr",
+      "x-default": "/",
+    },
+  },
   openGraph: {
     title: "Atlas Journal — Ideas that make tomorrow clearer",
     description:
@@ -45,7 +56,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSerif.variable} ${dmSans.variable}`}>
       <body className="antialiased font-sans text-ink bg-paper selection:bg-orange/30 selection:text-ink">
-        {children}
+        <I18nProvider>{children}</I18nProvider>
       </body>
     </html>
   );

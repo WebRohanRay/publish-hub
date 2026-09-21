@@ -1,8 +1,14 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { AtlasLogo } from "@/components/brand/AtlasLogo";
+import { LanguageSwitcher } from "@/components/brand/LanguageSwitcher";
+import { useI18n } from "@/lib/i18n";
 
 export const PublicFooter: React.FC = () => {
+  const { t } = useI18n();
+
   return (
     <footer className="mt-20 border-t border-border bg-paper-public pt-14 pb-12 text-ink">
       <div className="mx-auto max-w-6xl px-6">
@@ -13,15 +19,19 @@ export const PublicFooter: React.FC = () => {
             <p className="mt-4 text-sm text-muted-text leading-relaxed max-w-sm">
               An independent review publication exploring modern matchmaking platforms, regulated iGaming operators, and intentional digital tools.
             </p>
-            <div className="mt-6 text-xs text-muted-text">
-              © {new Date().getFullYear()} Atlas Journal. All rights reserved.
+            <div className="mt-6 flex items-center gap-3">
+              <span className="text-xs text-muted-text">Language:</span>
+              <LanguageSwitcher />
+            </div>
+            <div className="mt-4 text-xs text-muted-text">
+              © {new Date().getFullYear()} Atlas Journal. {t.footer.rightsReserved}
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Categories */}
           <div className="md:col-span-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-ink mb-4">
-              Categories
+              {t.footer.categoriesTitle}
             </h4>
             <ul className="space-y-2.5 text-sm text-muted-text">
               <li>
@@ -50,7 +60,7 @@ export const PublicFooter: React.FC = () => {
           {/* Publication Links */}
           <div className="md:col-span-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-ink mb-4">
-              Publication
+              {t.footer.publicationTitle}
             </h4>
             <ul className="space-y-2.5 text-sm text-muted-text">
               <li>
@@ -79,7 +89,7 @@ export const PublicFooter: React.FC = () => {
           {/* Admin & Security Area */}
           <div className="md:col-span-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-ink mb-4">
-              Editorial Workspace
+              {t.footer.workspaceTitle}
             </h4>
             <p className="text-xs text-muted-text mb-4 leading-normal">
               Private editorial desk for single administrator publishing and moderation.
@@ -88,7 +98,7 @@ export const PublicFooter: React.FC = () => {
               href="/admin"
               className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-xs font-semibold text-ink transition hover:border-orange hover:text-orange shadow-xs"
             >
-              <span>Access Admin Dashboard</span>
+              <span>{t.footer.accessDashboard}</span>
               <span>→</span>
             </Link>
           </div>
@@ -97,10 +107,10 @@ export const PublicFooter: React.FC = () => {
         {/* Regulatory & Affiliate Disclosure Note */}
         <div className="mt-12 pt-8 border-t border-border/80 text-[11px] text-muted-text/80 space-y-2 leading-relaxed">
           <p>
-            <strong>Editorial & Affiliate Disclosure:</strong> Atlas Editorial provides independent reviews, data-driven comparisons, and analysis. Some links featured across our reviews are affiliate referral links, meaning we may earn a commercial commission if you register or claim a promotion through our site. This does not impact our rigorous editorial independence or rating methodology.
+            <strong>Editorial & Affiliate Disclosure:</strong> {t.footer.affiliateDisclosure}
           </p>
           <p>
-            <strong>Responsible Gaming & Safety:</strong> You must be 18 years of age or older (21+ where applicable) to participate in real-money gaming. Please gamble responsibly and only wager what you can afford to lose. For free, confidential gambling support call 1-800-GAMBLER or visit BeGambleAware.org.
+            <strong>Responsible Gaming & Safety:</strong> {t.footer.gamblingWarning}
           </p>
         </div>
       </div>

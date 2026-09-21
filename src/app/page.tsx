@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { PublicHeader } from "@/components/public/PublicHeader";
@@ -8,13 +10,15 @@ import { ComparisonTable } from "@/components/public/ComparisonTable";
 import { NewsletterSection } from "@/components/public/NewsletterSection";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { INITIAL_CATEGORIES, INITIAL_POSTS } from "@/data/seedData";
+import { useI18n } from "@/lib/i18n";
 
 export default function HomePage() {
+  const { t } = useI18n();
   const featurePost = INITIAL_POSTS[0];
   const latestPosts = INITIAL_POSTS.slice(1, 4);
 
   return (
-    <div className="min-h-screen bg-paper-public text-ink flex flex-col">
+    <div className="min-h-screen bg-paper-public text-ink flex flex-col selection:bg-orange/30">
       <PublicHeader />
 
       <main className="flex-1 mx-auto w-full max-w-6xl px-6 pt-8 pb-16">
@@ -22,16 +26,16 @@ export default function HomePage() {
         <section className="pt-8 pb-4">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-text">
             <span className="h-2 w-2 rounded-full bg-orange" />
-            <span>A publication for the curious</span>
+            <span>{t.hero.kicker}</span>
           </div>
 
           <h1 className="mt-3 font-serif text-4xl sm:text-6xl lg:text-7xl font-normal leading-[0.96] text-ink tracking-tight max-w-4xl">
-            Reviews and intelligence that make choices{" "}
-            <span className="italic font-serif text-orange">clearer.</span>
+            {t.hero.titleStart}
+            <span className="italic font-serif text-orange">{t.hero.titleEmphasis}</span>
           </h1>
 
           <p className="mt-5 text-base sm:text-lg text-muted-text max-w-2xl leading-relaxed">
-            Atlas is an independent weekly journal evaluating top matchmaking platforms, regulated iGaming operators, and intentional tools shaping how we connect and play.
+            {t.hero.subtitle}
           </p>
         </section>
 
@@ -49,17 +53,17 @@ export default function HomePage() {
           <div className="flex items-baseline justify-between border-b border-border/80 pb-4">
             <div>
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-text">
-                Fresh from the desk
+                {t.latest.eyebrow}
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl text-ink mt-0.5">
-                Latest stories & breakdowns
+                {t.latest.heading}
               </h2>
             </div>
             <Link
               href="/blog"
               className="text-xs font-semibold text-ink hover:text-orange transition-colors flex items-center gap-1"
             >
-              <span>View all stories</span>
+              <span>{t.latest.viewAll}</span>
               <span>→</span>
             </Link>
           </div>
