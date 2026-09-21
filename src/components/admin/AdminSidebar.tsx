@@ -2,9 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import { AtlasLogo } from "@/components/brand/AtlasLogo";
+import { AxiomLogo } from "@/components/brand/AxiomLogo";
 
 interface AdminSidebarProps {
   onCloseMobile?: () => void;
@@ -12,6 +12,15 @@ interface AdminSidebarProps {
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
+    router.push("/admin/login");
+    router.refresh();
+  };
 
   const navGroups = [
     {
@@ -24,7 +33,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
     {
       label: "Publishing",
       items: [
-        { label: "Posts", href: "/admin/posts", icon: "📝", count: 128 },
+        { label: "Posts", href: "/admin/posts", icon: "📝" },
         { label: "Categories", href: "/admin/categories", icon: "🏷️" },
         { label: "Media library", href: "/admin/media", icon: "🖼️" },
       ],
@@ -32,7 +41,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
     {
       label: "Audience",
       items: [
-        { label: "Comments", href: "/admin/comments", icon: "💬", count: 12 },
+        { label: "Comments", href: "/admin/comments", icon: "💬" },
         { label: "Subscribers", href: "/admin/subscribers", icon: "📬" },
       ],
     },
@@ -47,32 +56,32 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
   ];
 
   return (
-    <aside className="w-[255px] shrink-0 bg-navy text-slate-300 flex flex-col h-screen sticky top-0 border-r border-navy-soft select-none z-50">
+    <aside className="w-[255px] shrink-0 bg-slate-950 text-slate-300 flex flex-col h-screen sticky top-0 border-r border-slate-800 select-none z-50">
       {/* Brand Header */}
-      <div className="p-6 pb-4 border-b border-navy-soft/80 flex items-center justify-between">
-        <AtlasLogo isDark={true} href="/admin" />
+      <div className="p-6 pb-4 border-b border-slate-800/80 flex items-center justify-between">
+        <AxiomLogo isDark={true} href="/admin" />
         {onCloseMobile && (
           <button
             onClick={onCloseMobile}
-            className="md:hidden text-slate-400 hover:text-white p-1"
+            className="md:hidden text-slate-400 hover:text-white p-1 cursor-pointer"
           >
             ✕
           </button>
         )}
       </div>
 
-      {/* Workspace Switcher */}
-      <div className="px-4 py-3 mx-4 my-3 rounded-xl bg-navy-soft/60 border border-navy-soft flex items-center justify-between cursor-pointer hover:bg-navy-soft transition">
+      {/* Workspace Indicator */}
+      <div className="px-4 py-3 mx-4 my-3 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange font-bold text-xs text-ink">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 font-bold text-xs text-white shadow-xs">
             A
           </div>
           <div>
-            <div className="text-xs font-semibold text-white">Atlas Journal</div>
-            <div className="text-[10px] text-slate-400">Personal publication</div>
+            <div className="text-xs font-semibold text-white">Axiom Editorial</div>
+            <div className="text-[10px] text-slate-400">Production Workspace</div>
           </div>
         </div>
-        <span className="text-xs text-slate-400">▾</span>
+        <span className="h-2 w-2 rounded-full bg-emerald-400" title="System Online" />
       </div>
 
       {/* Navigation Links */}
@@ -92,25 +101,18 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
                     onClick={onCloseMobile}
                     className={`relative flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium transition ${
                       isActive
-                        ? "bg-navy-soft text-white font-semibold"
-                        : "text-slate-300 hover:bg-navy-soft/40 hover:text-white"
+                        ? "bg-indigo-950/70 text-indigo-200 font-semibold border border-indigo-800/50"
+                        : "text-slate-300 hover:bg-slate-900 hover:text-white"
                     }`}
                   >
-                    {/* 3px Orange Inset Bar for Active State per 4.1 */}
                     {isActive && (
-                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-orange" />
+                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-indigo-500" />
                     )}
 
                     <div className="flex items-center gap-2.5">
                       <span className="text-sm">{item.icon}</span>
                       <span>{item.label}</span>
                     </div>
-
-                    {item.count !== undefined && (
-                      <span className="rounded-full bg-navy px-2 py-0.5 text-[10px] font-bold text-orange border border-navy-soft">
-                        {item.count}
-                      </span>
-                    )}
                   </Link>
                 );
               })}
@@ -119,10 +121,10 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
         ))}
       </div>
 
-      {/* Profile Row */}
-      <div className="p-4 border-t border-navy-soft/80 flex items-center justify-between">
+      {/* Profile & Logout Row */}
+      <div className="p-4 border-t border-slate-800/80 flex items-center justify-between bg-slate-950">
         <div className="flex items-center gap-2.5">
-          <div className="relative h-8 w-8 rounded-full overflow-hidden border border-orange/40 bg-muted">
+          <div className="relative h-8 w-8 rounded-full overflow-hidden border border-indigo-500/40 bg-slate-800">
             <Image
               src="/avatars/avatar_maya_patel.jpg"
               alt="Maya Patel"
@@ -132,17 +134,19 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
           </div>
           <div>
             <div className="text-xs font-semibold text-white">Maya Patel</div>
-            <div className="text-[10px] text-slate-400">Administrator</div>
+            <div className="text-[10px] text-emerald-400">Super Admin</div>
           </div>
         </div>
 
-        <Link
-          href="/"
-          className="text-xs text-orange hover:text-orange/80 transition"
-          title="View Live Site"
+        <button
+          onClick={handleLogout}
+          className="text-xs text-slate-400 hover:text-red-400 transition p-1.5 rounded-lg hover:bg-slate-900 cursor-pointer"
+          title="Log out"
         >
-          ↗
-        </Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
       </div>
     </aside>
   );
