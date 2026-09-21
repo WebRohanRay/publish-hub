@@ -4,9 +4,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { AtlasLogo } from "@/components/brand/AtlasLogo";
 import { LanguageSwitcher } from "@/components/brand/LanguageSwitcher";
+import { useI18n } from "@/lib/i18n";
 
 export const PublicHeader: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <>
@@ -21,31 +23,31 @@ export const PublicHeader: React.FC = () => {
                 href="/category/dating"
                 className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                Dating & Matchmaking
+                {t.nav.dating}
               </Link>
               <Link
                 href="/category/gambling-casino"
                 className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                Casino & Betting
+                {t.nav.casino}
               </Link>
               <Link
                 href="/category/adult-lifestyle"
                 className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                Adult Entertainment
+                {t.nav.adult}
               </Link>
               <Link
                 href="/category/guides-security"
                 className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                Privacy & Crypto
+                {t.nav.privacy}
               </Link>
               <Link
                 href="/blog"
                 className="transition-colors hover:text-orange hover:underline decoration-orange decoration-2 underline-offset-8"
               >
-                All Blogs
+                {t.nav.allBlogs}
               </Link>
             </nav>
           </div>
@@ -114,35 +116,35 @@ export const PublicHeader: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 hover:text-orange transition-colors"
               >
-                Dating & Matchmaking
+                {t.nav.dating}
               </Link>
               <Link
                 href="/category/gambling-casino"
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 hover:text-orange transition-colors"
               >
-                Casino & Sports Betting
+                {t.nav.casino}
               </Link>
               <Link
                 href="/category/adult-lifestyle"
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 hover:text-orange transition-colors"
               >
-                Adult Entertainment & Creators
+                {t.nav.adult}
               </Link>
               <Link
                 href="/category/guides-security"
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 hover:text-orange transition-colors"
               >
-                Privacy, Crypto & Guides
+                {t.nav.privacy}
               </Link>
               <Link
                 href="/blog"
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-1 hover:text-orange transition-colors"
               >
-                All Blogs
+                {t.nav.allBlogs}
               </Link>
             </div>
 

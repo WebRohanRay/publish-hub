@@ -14,15 +14,16 @@ export const ArticleJsonLd: React.FC<ArticleJsonLdProps> = ({ post, url }) => {
     description: post.excerpt,
     image: [post.image],
     datePublished: "2026-09-20T00:00:00Z",
-    dateModified: "2026-09-20T00:00:00Z",
+    dateModified: "2026-09-21T00:00:00Z",
     author: {
       "@type": "Person",
-      name: post.author.name,
-      jobTitle: post.author.role,
+      name: post.author?.name || "Rohan Ray",
+      jobTitle: post.author?.role || "Editor-in-Chief",
     },
     publisher: {
       "@type": "Organization",
-      name: "Atlas Journal",
+      name: "NoxWire",
+      url: "https://publish-hub.vercel.app",
       logo: {
         "@type": "ImageObject",
         url: "https://publish-hub.vercel.app/art/atlas_social_card.jpg",
@@ -43,7 +44,7 @@ export const ArticleJsonLd: React.FC<ArticleJsonLdProps> = ({ post, url }) => {
             },
             author: {
               "@type": "Person",
-              name: post.author.name,
+              name: post.author?.name || "Rohan Ray",
             },
           },
         }

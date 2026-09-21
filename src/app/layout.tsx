@@ -22,9 +22,9 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://publish-hub.vercel.app"),
-  title: "Atlas Journal — Dating, iGaming & Adult Entertainment Reviews",
+  title: "NoxWire — Dating Apps, Instant Payout Casinos & Adult Tech Reviews",
   description:
-    "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
+    "The unfiltered independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
   keywords: [
     "dating apps review",
     "online casino instant payout",
@@ -33,11 +33,11 @@ export const metadata: Metadata = {
     "discreet billing",
     "crypto gambling vouchers",
     "best matchmaking apps 2026",
-    "Atlas Journal",
+    "NoxWire",
   ],
-  authors: [{ name: "Maya Patel", url: "https://publish-hub.vercel.app/about" }],
-  creator: "Maya Patel",
-  publisher: "Atlas Journal",
+  authors: [{ name: "Rohan Ray", url: "https://publish-hub.vercel.app/about" }],
+  creator: "Rohan Ray",
+  publisher: "NoxWire",
   alternates: {
     canonical: "/",
     languages: {
@@ -49,17 +49,17 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Atlas Journal — Dating, iGaming & Adult Entertainment Reviews",
+    title: "NoxWire — Dating Apps, Instant Payout Casinos & Adult Tech Reviews",
     description:
-      "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
+      "The unfiltered independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
     url: "https://publish-hub.vercel.app",
-    siteName: "Atlas Journal",
+    siteName: "NoxWire",
     images: [
       {
         url: "/art/atlas_social_card.jpg",
         width: 1200,
         height: 630,
-        alt: "Atlas Journal — Dating, iGaming & Adult Entertainment",
+        alt: "NoxWire — Dating, iGaming & Adult Tech",
       },
     ],
     locale: "en_US",
@@ -67,11 +67,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Atlas Journal — Dating, iGaming & Adult Entertainment Reviews",
+    title: "NoxWire — Dating Apps, Instant Payout Casinos & Adult Tech Reviews",
     description:
-      "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
+      "The unfiltered independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
     images: ["/art/atlas_social_card.jpg"],
-    creator: "@AtlasJournalHQ",
+    creator: "@NoxWireHQ",
   },
   robots: {
     index: true,

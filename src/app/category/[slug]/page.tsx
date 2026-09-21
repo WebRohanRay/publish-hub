@@ -1,12 +1,9 @@
 import React from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { PublicFooter } from "@/components/public/PublicFooter";
-import { StoryCard } from "@/components/public/StoryCard";
-import { TopicRibbon } from "@/components/public/TopicRibbon";
-import { AdsterraBanner } from "@/components/ads/AdsterraMonetization";
+import { CategoryArchiveView } from "@/components/public/CategoryArchiveView";
 import { INITIAL_CATEGORIES, INITIAL_POSTS } from "@/data/seedData";
 
 interface PageProps {
@@ -25,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!category) {
     return {
-      title: "Topic Not Found — Atlas Editorial",
+      title: "Topic Not Found — NoxWire",
     };
   }
 
@@ -127,51 +124,11 @@ export default async function CategoryArchivePage({ params }: PageProps) {
 
       <PublicHeader />
 
-      <main className="flex-1 mx-auto w-full max-w-6xl px-6 pt-6 pb-20">
-        {/* Top Adsterra Leaderboard Slot */}
-        <AdsterraBanner format="leaderboard" />
-
-        <div className="border-b border-border/80 pb-8">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-text mb-2">
-            <Link href="/blog" className="hover:text-ink">
-              All Topics
-            </Link>
-            <span>/</span>
-            <span className="text-orange">{currentCategory.name}</span>
-          </div>
-
-          <h1 className="font-serif text-4xl sm:text-5xl text-ink">
-            {currentCategory.name}
-          </h1>
-          <p className="mt-3 text-base text-muted-text max-w-2xl leading-relaxed">
-            {currentCategory.description}
-          </p>
-        </div>
-
-        <TopicRibbon categories={INITIAL_CATEGORIES} activeCategory={currentCategory.slug} />
-
-        {categoryPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-            {categoryPosts.map((post) => (
-              <StoryCard key={post.id} post={post} />
-            ))}
-          </div>
-        ) : (
-          <div className="my-16 text-center py-16 rounded-2xl border border-dashed border-border bg-card">
-            <span className="text-3xl block mb-2">✍️</span>
-            <h3 className="font-serif text-xl text-ink">No stories published in this topic yet.</h3>
-            <p className="text-sm text-muted-text mt-2 max-w-sm mx-auto">
-              Our editorial writers are preparing new essays for this collection.
-            </p>
-            <Link
-              href="/blog"
-              className="mt-5 inline-block rounded-xl bg-navy hover:bg-navy-soft px-5 py-2.5 text-xs font-bold text-white shadow-button transition"
-            >
-              Back to All Stories
-            </Link>
-          </div>
-        )}
-      </main>
+      <CategoryArchiveView
+        category={currentCategory}
+        allCategories={INITIAL_CATEGORIES}
+        posts={categoryPosts}
+      />
 
       <PublicFooter />
     </div>

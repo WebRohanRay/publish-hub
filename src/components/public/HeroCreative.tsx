@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Post, INITIAL_POSTS } from "@/data/seedData";
+import { useI18n } from "@/lib/i18n";
 
 interface HeroCreativeProps {
   initialPosts?: Post[];
@@ -14,26 +15,27 @@ export const HeroCreative: React.FC<HeroCreativeProps> = ({
   initialPosts = INITIAL_POSTS,
 }) => {
   const router = useRouter();
+  const { t } = useI18n();
   const [activeTab, setActiveTab] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
   const tabConfigs = [
     {
-      tabLabel: "Dating & Matchmaking",
+      tabLabel: t.hero.tabDating,
       slug: "dating",
       score: "9.6",
       statLabel: "74% Match Retention",
       speedStat: "Tested on 40 profiles",
     },
     {
-      tabLabel: "Casino & Betting",
+      tabLabel: t.hero.tabCasino,
       slug: "gambling-casino",
       score: "9.8",
       statLabel: "18 min Crypto Payout",
       speedStat: "Tested with real capital",
     },
     {
-      tabLabel: "Adult Entertainment",
+      tabLabel: t.hero.tabAdult,
       slug: "adult-lifestyle",
       score: "9.4",
       statLabel: "100% Discreet Descriptors",
@@ -98,19 +100,18 @@ export const HeroCreative: React.FC<HeroCreativeProps> = ({
           <div className="lg:col-span-6 flex flex-col justify-center">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-text">
               <span className="h-2 w-2 rounded-full bg-orange animate-pulse" />
-              <span>18+ Curated Review Journal</span>
+              <span>{t.hero.verifiedToday}</span>
               <span>•</span>
               <span className="text-orange font-bold">{currentPost?.category || currentTab.tabLabel}</span>
             </div>
 
             <h1 className="mt-4 font-serif text-4xl sm:text-5xl lg:text-6xl font-normal leading-[1.05] text-ink tracking-tight">
-              Unfiltered reviews for dating, iGaming &{" "}
-              <span className="italic font-serif text-orange">adult entertainment.</span>
+              {t.hero.titleStart}
+              <span className="italic font-serif text-orange">{t.hero.titleEmphasis}</span>
             </h1>
 
             <p className="mt-4 text-base sm:text-lg text-muted-text leading-relaxed">
-              Atlas conducts rigorous, hands-on investigations analyzing algorithmic reply rates,
-              instant cryptocurrency payout clearance, and discreet billing protection.
+              {t.hero.subtitle}
             </p>
 
             {/* Special Highlight Pill */}
@@ -134,15 +135,7 @@ export const HeroCreative: React.FC<HeroCreativeProps> = ({
                 href={currentPost ? `/blog/${currentPost.slug}` : "/blog"}
                 className="inline-flex items-center gap-2 rounded-xl bg-navy hover:bg-navy-soft px-6 py-3.5 text-xs sm:text-sm font-bold text-white shadow-button hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer"
               >
-                <span>Read Full Review</span>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
+                <span>{t.hero.ctaPrimary}</span>
               </Link>
 
               <Link

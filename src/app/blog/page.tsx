@@ -9,8 +9,10 @@ import { TopicRibbon } from "@/components/public/TopicRibbon";
 import { AdsterraBanner } from "@/components/ads/AdsterraMonetization";
 import { INITIAL_CATEGORIES, INITIAL_POSTS, Post } from "@/data/seedData";
 import { dataStore } from "@/lib/dataStore";
+import { useI18n } from "@/lib/i18n";
 
 function BlogArchiveContent() {
+  const { t } = useI18n();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || "all";
@@ -77,14 +79,13 @@ function BlogArchiveContent() {
         {/* Page Header */}
         <div className="border-b border-border/80 pb-8">
           <span className="text-xs font-semibold uppercase tracking-wider text-orange">
-            The Complete Review Archive
+            {t.archive.eyebrow}
           </span>
           <h1 className="mt-2 font-serif text-4xl sm:text-5xl text-ink">
-            All Reviews, Guides & Audits
+            {t.archive.heading}
           </h1>
           <p className="mt-3 text-base text-muted-text max-w-2xl leading-relaxed">
-            Explore our comprehensive, unfiltered breakdowns across modern dating apps,
-            regulated iGaming operators, instant crypto payouts, and adult entertainment networks.
+            {t.archive.subtitle}
           </p>
         </div>
 
@@ -95,13 +96,13 @@ function BlogArchiveContent() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search dating, casino, or adult reviews..."
+              placeholder={t.archive.searchPlaceholder}
               className="w-full rounded-xl bg-card px-4 py-2.5 text-sm border border-border focus:border-orange focus:outline-none shadow-xs text-ink placeholder:text-muted-text"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-2.5 text-xs text-muted-text hover:text-ink"
+                className="absolute right-3 top-2.5 text-xs text-muted-text hover:text-ink cursor-pointer"
               >
                 ✕
               </button>
@@ -114,9 +115,9 @@ function BlogArchiveContent() {
               onChange={(e) => setSortBy(e.target.value as any)}
               className="rounded-xl bg-card px-3.5 py-2.5 text-xs font-semibold text-ink border border-border focus:border-orange focus:outline-none shadow-xs cursor-pointer"
             >
-              <option value="latest">Sort: Latest Reviews</option>
-              <option value="popular">Sort: Most Read</option>
-              <option value="comments">Sort: Most Discussed</option>
+              <option value="latest">{t.archive.sortLatest}</option>
+              <option value="popular">{t.archive.sortPopular}</option>
+              <option value="comments">{t.archive.sortComments}</option>
             </select>
           </div>
         </div>
@@ -137,9 +138,9 @@ function BlogArchiveContent() {
         ) : (
           <div className="my-16 text-center py-16 rounded-2xl border border-dashed border-border bg-card">
             <span className="text-3xl block mb-2">🔍</span>
-            <h3 className="font-serif text-xl text-ink">No reviews match that query</h3>
+            <h3 className="font-serif text-xl text-ink">{t.archive.noResultsTitle}</h3>
             <p className="text-sm text-muted-text mt-2 max-w-sm mx-auto">
-              Try adjusting your search terms or selecting another category.
+              {t.archive.noResultsDesc}
             </p>
             <button
               onClick={() => {
@@ -148,7 +149,7 @@ function BlogArchiveContent() {
               }}
               className="mt-5 rounded-xl bg-navy hover:bg-navy-soft px-5 py-2 text-xs font-bold text-white shadow-button transition cursor-pointer"
             >
-              Clear Filters
+              {t.archive.clearFilters}
             </button>
           </div>
         )}

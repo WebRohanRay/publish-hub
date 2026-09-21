@@ -267,6 +267,51 @@ CREATE POLICY "Admin has full access to newsletter_subscribers" ON public.newsle
 CREATE POLICY "Admin has full access to activity_logs" ON public.activity_logs FOR ALL USING (public.is_admin());
 
 -- Seed Default Settings
-INSERT INTO public.site_settings (key, site_name)
-VALUES ('default', 'Atlas Journal')
-ON CONFLICT (key) DO NOTHING;
+INSERT INTO public.site_settings (key, site_name, default_meta_title)
+VALUES ('default', 'NoxWire', 'NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech')
+ON CONFLICT (key) DO UPDATE SET
+  site_name = EXCLUDED.site_name,
+  default_meta_title = EXCLUDED.default_meta_title;
+
+-- ==============================================================================
+-- 7. Supabase Storage Buckets & Policies (blog-images & avatars)
+-- ==============================================================================
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES 
+  ('blog-images', 'blog-images', true, 10485760, ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml']),
+  ('avatars', 'avatars', true, 5242880, ARRAY['image/jpeg', 'image/png', 'image/webp'])
+ON CONFLICT (id) DO UPDATE SET
+  public = EXCLUDED.public,
+  file_size_limit = EXCLUDED.file_size_limit,
+  allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+-- Storage RLS Policies
+DROP POLICY IF EXISTS "Public can view blog-images and avatars" ON storage.objects;
+CREATE POLICY "Public can view blog-images and avatars"
+  ON storage.objects FOR SELECT
+  USING (bucket_id IN ('blog-images', 'avatars'));
+
+DROP POLICY IF EXISTS "Admin can upload to blog-images and avatars" ON storage.objects;
+CREATE POLICY "Admin can upload to blog-images and avatars"
+  ON storage.objects FOR INSERT
+  WITH CHECK (
+    bucket_id IN ('blog-images', 'avatars') AND
+    (public.is_admin() OR auth.role() = 'service_role')
+  );
+
+DROP POLICY IF EXISTS "Admin can update storage objects" ON storage.objects;
+CREATE POLICY "Admin can update storage objects"
+  ON storage.objects FOR UPDATE
+  USING (
+    bucket_id IN ('blog-images', 'avatars') AND
+    (public.is_admin() OR auth.role() = 'service_role')
+  );
+
+DROP POLICY IF EXISTS "Admin can delete storage objects" ON storage.objects;
+CREATE POLICY "Admin can delete storage objects"
+  ON storage.objects FOR DELETE
+  USING (
+    bucket_id IN ('blog-images', 'avatars') AND
+    (public.is_admin() OR auth.role() = 'service_role')
+  );
+

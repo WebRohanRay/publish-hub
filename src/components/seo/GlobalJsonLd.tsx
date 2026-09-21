@@ -4,10 +4,10 @@ export const GlobalJsonLd: React.FC = () => {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Atlas Journal",
-    "alternateName": ["Atlas Review Hub", "Atlas Lifestyle"],
+    "name": "NoxWire",
+    "alternateName": ["NoxWire Journal", "NoxWire Reviews", "NoxWire Editorial"],
     "url": "https://publish-hub.vercel.app",
-    "description": "The premier independent review journal for verified dating apps, regulated online casinos, sportsbook odds, and creator-led adult entertainment platforms.",
+    "description": "The unfiltered review journal for verified dating apps, regulated online casinos, sportsbook odds, and adult creator tech.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": {
@@ -22,7 +22,7 @@ export const GlobalJsonLd: React.FC = () => {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "NewsMediaOrganization",
-    "name": "Atlas Journal",
+    "name": "NoxWire",
     "url": "https://publish-hub.vercel.app",
     "logo": {
       "@type": "ImageObject",
@@ -34,8 +34,8 @@ export const GlobalJsonLd: React.FC = () => {
     "founders": [
       {
         "@type": "Person",
-        "name": "Maya Patel",
-        "jobTitle": "Lead Reviewer & Editor-in-Chief"
+        "name": "Rohan Ray",
+        "jobTitle": "Editor-in-Chief"
       }
     ],
     "knowsAbout": [
@@ -47,7 +47,7 @@ export const GlobalJsonLd: React.FC = () => {
       "Discreet Billing & Privacy Protection"
     ],
     "sameAs": [
-      "https://twitter.com/AtlasJournalHQ",
+      "https://twitter.com/NoxWireHQ",
       "https://github.com/WebRohanRay/publish-hub"
     ]
   };

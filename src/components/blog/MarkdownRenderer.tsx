@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface MarkdownRendererProps {
   content: string;
@@ -14,19 +15,21 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 }) => {
   if (!content) return null;
 
-  // Split into raw blocks (paragraphs, headers, tables, lists, quotes)
+  // Split into raw lines
   const lines = content.split("\n");
   const elements: React.ReactNode[] = [];
   let i = 0;
 
   const parseInline = (text: string): React.ReactNode => {
-    // Process markdown links [text](url), bold **bold**, italic *italic*, code `code`
+    // 1. Process markdown images: ![alt](url)
+    const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    // 2. Process markdown links: [text](url)
+    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+
     const parts: React.ReactNode[] = [];
     let remaining = text;
     let keyIdx = 0;
 
-    // Regex for links: [text](url)
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     let match;
     let lastIndex = 0;
 
@@ -46,7 +49,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           <Link
             key={`link-${keyIdx++}`}
             href={linkUrl}
-            className="text-orange hover:text-ink font-medium underline underline-offset-4 decoration-orange/40 hover:decoration-ink transition-colors"
+            className="text-orange hover:text-ink font-semibold underline underline-offset-4 decoration-orange/50 hover:decoration-ink transition-colors"
           >
             {linkText}
           </Link>
@@ -58,10 +61,10 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
             href={linkUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-orange hover:text-ink font-medium underline underline-offset-4 decoration-orange/40 hover:decoration-ink transition-colors inline-flex items-baseline gap-0.5"
+            className="text-orange hover:text-ink font-semibold underline underline-offset-4 decoration-orange/50 hover:decoration-ink transition-colors inline-flex items-baseline gap-0.5"
           >
             <span>{linkText}</span>
-            <span className="text-[10px] opacity-60">↗</span>
+            <span className="text-[10px] opacity-70">↗</span>
           </a>
         );
       }
@@ -77,32 +80,55 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   };
 
   const renderFormatting = (text: string, baseKey: string): React.ReactNode => {
-    // Handle bold **text**
+    // 1. Handle bold: **text**
     const boldParts = text.split(/(\*\*[^*]+\*\*)/g);
     return boldParts.map((bPart, bIdx) => {
       if (bPart.startsWith("**") && bPart.endsWith("**")) {
         const inner = bPart.slice(2, -2);
         return (
-          <strong key={`${baseKey}-b-${bIdx}`} className="font-semibold text-ink">
-            {inner}
+          <strong key={`${baseKey}-b-${bIdx}`} className="font-bold text-ink">
+            {renderItalics(inner, `${baseKey}-bi-${bIdx}`)}
           </strong>
         );
       }
-      // Handle inline code `code`
-      const codeParts = bPart.split(/(`[^`]+`)/g);
-      return codeParts.map((cPart, cIdx) => {
-        if (cPart.startsWith("`") && cPart.endsWith("`")) {
-          return (
-            <code
-              key={`${baseKey}-c-${cIdx}`}
-              className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-ink border border-border"
-            >
-              {cPart.slice(1, -1)}
-            </code>
-          );
-        }
-        return cPart;
-      });
+      return renderItalics(bPart, `${baseKey}-i-${bIdx}`);
+    });
+  };
+
+  const renderItalics = (text: string, baseKey: string): React.ReactNode => {
+    // 2. Handle italics: *text* or _text_
+    const italicParts = text.split(/(\*[^*]+\*|_[^_]+_)/g);
+    return italicParts.map((iPart, iIdx) => {
+      if (
+        (iPart.startsWith("*") && iPart.endsWith("*") && iPart.length > 2) ||
+        (iPart.startsWith("_") && iPart.endsWith("_") && iPart.length > 2)
+      ) {
+        const inner = iPart.slice(1, -1);
+        return (
+          <em key={`${baseKey}-em-${iIdx}`} className="italic font-serif text-ink">
+            {renderCode(inner, `${baseKey}-emi-${iIdx}`)}
+          </em>
+        );
+      }
+      return renderCode(iPart, `${baseKey}-c-${iIdx}`);
+    });
+  };
+
+  const renderCode = (text: string, baseKey: string): React.ReactNode => {
+    // 3. Handle inline code: `code`
+    const codeParts = text.split(/(`[^`]+`)/g);
+    return codeParts.map((cPart, cIdx) => {
+      if (cPart.startsWith("`") && cPart.endsWith("`") && cPart.length > 2) {
+        return (
+          <code
+            key={`${baseKey}-code-${cIdx}`}
+            className="rounded-md bg-muted px-2 py-0.5 font-mono text-xs font-semibold text-ink border border-border/80"
+          >
+            {cPart.slice(1, -1)}
+          </code>
+        );
+      }
+      return cPart;
     });
   };
 
@@ -114,7 +140,31 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       continue;
     }
 
-    // Markdown Headings
+    // Horizontal Rule: --- or ***
+    if (line === "---" || line === "***" || line === "___") {
+      elements.push(
+        <hr key={`hr-${i}`} className="my-10 border-t border-border/80" />
+      );
+      i++;
+      continue;
+    }
+
+    // Heading 4
+    if (line.startsWith("#### ")) {
+      const title = line.replace("#### ", "");
+      elements.push(
+        <h4
+          key={`h4-${i}`}
+          className="font-serif text-lg sm:text-xl font-bold text-ink mt-6 mb-3 tracking-tight"
+        >
+          {parseInline(title)}
+        </h4>
+      );
+      i++;
+      continue;
+    }
+
+    // Heading 3 (e.g. Questions, subsections)
     if (line.startsWith("### ")) {
       const title = line.replace("### ", "");
       elements.push(
@@ -129,15 +179,31 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       continue;
     }
 
+    // Heading 2 (Major section dividers)
     if (line.startsWith("## ")) {
       const title = line.replace("## ", "");
       elements.push(
         <h2
           key={`h2-${i}`}
-          className="font-serif text-2xl sm:text-3xl font-bold text-ink mt-10 mb-5 pb-2 border-b border-border/70 tracking-tight"
+          className="font-serif text-2xl sm:text-3xl font-bold text-ink mt-12 mb-6 pb-2.5 border-b border-border/80 tracking-tight"
         >
           {parseInline(title)}
         </h2>
+      );
+      i++;
+      continue;
+    }
+
+    // Heading 1
+    if (line.startsWith("# ")) {
+      const title = line.replace("# ", "");
+      elements.push(
+        <h1
+          key={`h1-${i}`}
+          className="font-serif text-3xl sm:text-4xl font-bold text-ink mt-12 mb-6 tracking-tight"
+        >
+          {parseInline(title)}
+        </h1>
       );
       i++;
       continue;
@@ -149,7 +215,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       elements.push(
         <blockquote
           key={`quote-${i}`}
-          className="my-6 border-l-4 border-orange pl-5 py-2 italic font-serif text-lg text-ink bg-card rounded-r-xl shadow-xs"
+          className="my-8 border-l-4 border-orange pl-6 py-4 italic font-serif text-xl sm:text-2xl text-ink bg-card rounded-r-2xl shadow-xs"
         >
           {parseInline(quoteText)}
         </blockquote>
@@ -179,12 +245,12 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
         );
 
         elements.push(
-          <div key={`table-${i}`} className="my-8 overflow-x-auto rounded-xl border border-border bg-card shadow-xs">
+          <div key={`table-${i}`} className="my-8 overflow-x-auto rounded-2xl border border-border bg-card shadow-soft">
             <table className="w-full text-left text-sm text-ink border-collapse">
-              <thead className="bg-paper border-b border-border text-xs uppercase tracking-wider text-muted-text font-semibold">
+              <thead className="bg-paper border-b border-border text-xs uppercase tracking-wider text-muted-text font-bold">
                 <tr>
                   {headerRow.map((head, hIdx) => (
-                    <th key={`th-${hIdx}`} className="p-3.5 sm:p-4">
+                    <th key={`th-${hIdx}`} className="p-4">
                       {parseInline(head)}
                     </th>
                   ))}
@@ -194,7 +260,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
                 {bodyRows.map((row, rIdx) => (
                   <tr key={`tr-${rIdx}`} className="hover:bg-paper/50 transition-colors">
                     {row.map((cell, cIdx) => (
-                      <td key={`td-${cIdx}`} className="p-3.5 sm:p-4 align-top">
+                      <td key={`td-${cIdx}`} className="p-4 align-top leading-relaxed">
                         {parseInline(cell)}
                       </td>
                     ))}
@@ -217,9 +283,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       }
 
       elements.push(
-        <ul key={`ul-${i}`} className="my-5 space-y-2.5 list-none pl-1">
+        <ul key={`ul-${i}`} className="my-6 space-y-3 list-none pl-1">
           {listItems.map((item, lIdx) => (
-            <li key={`li-${lIdx}`} className="flex items-start gap-2.5 text-base sm:text-lg text-ink">
+            <li key={`li-${lIdx}`} className="flex items-start gap-3 text-base sm:text-lg text-ink">
               <span className="text-orange mt-1.5 text-sm shrink-0">▪</span>
               <div className="flex-1 leading-relaxed">{parseInline(item)}</div>
             </li>
@@ -238,9 +304,9 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
       }
 
       elements.push(
-        <ol key={`ol-${i}`} className="my-5 space-y-3 list-none pl-1">
+        <ol key={`ol-${i}`} className="my-6 space-y-3.5 list-none pl-1">
           {listItems.map((item, lIdx) => (
-            <li key={`oli-${lIdx}`} className="flex items-start gap-3 text-base sm:text-lg text-ink">
+            <li key={`oli-${lIdx}`} className="flex items-start gap-3.5 text-base sm:text-lg text-ink">
               <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-paper border border-border text-xs font-bold text-ink mt-0.5">
                 {lIdx + 1}
               </span>
@@ -254,7 +320,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 
     // Regular Paragraph
     elements.push(
-      <p key={`p-${i}`} className="my-4 text-base sm:text-lg leading-relaxed text-ink/90">
+      <p key={`p-${i}`} className="my-5 text-base sm:text-lg leading-relaxed text-ink/90">
         {parseInline(line)}
       </p>
     );

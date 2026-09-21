@@ -5,7 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { AdsterraBanner } from "@/components/ads/AdsterraMonetization";
 import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
+import { StoryCard } from "@/components/public/StoryCard";
+import { LanguageSwitcher } from "@/components/brand/LanguageSwitcher";
 import { Post } from "@/data/seedData";
+import { useI18n } from "@/lib/i18n";
+import { getLocalizedPost } from "@/lib/translations";
 
 interface ArticleInteractiveViewProps {
   post: Post;
@@ -18,6 +22,9 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
   relatedPosts,
   canonicalUrl,
 }) => {
+  const { locale, t } = useI18n();
+  const localizedPost = getLocalizedPost(post, locale);
+
   // Likes state with localStorage and API tracking
   const [likes, setLikes] = useState(post.likes);
   const [hasLiked, setHasLiked] = useState(false);
@@ -31,7 +38,7 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const likedPosts = JSON.parse(localStorage.getItem("atlas_likes") || "{}");
+      const likedPosts = JSON.parse(localStorage.getItem("noxwire_likes") || localStorage.getItem("atlas_likes") || "{}");
       if (likedPosts[post.id]) {
         setHasLiked(true);
       }
@@ -55,13 +62,13 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
     setLikes((prev) => (nextState ? prev + 1 : Math.max(0, prev - 1)));
 
     if (typeof window !== "undefined") {
-      const likedPosts = JSON.parse(localStorage.getItem("atlas_likes") || "{}");
+      const likedPosts = JSON.parse(localStorage.getItem("noxwire_likes") || "{}");
       if (nextState) {
         likedPosts[post.id] = true;
       } else {
         delete likedPosts[post.id];
       }
-      localStorage.setItem("atlas_likes", JSON.stringify(likedPosts));
+      localStorage.setItem("noxwire_likes", JSON.stringify(likedPosts));
 
       try {
         await fetch("/api/likes", {
@@ -107,35 +114,42 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
       } else {
         setCommentStatus("error");
       }
-    } catch {
-      setCommentStatus("success"); // Graceful fallback
+    } catch (err) {
+      setCommentStatus("error");
     }
   };
 
   return (
     <main className="flex-1 mx-auto w-full max-w-4xl px-6 pt-6 pb-20">
-      {/* Top High-RPM Adsterra Banner */}
+      {/* Top Native Adsterra Banner Slot */}
       <AdsterraBanner format="leaderboard" />
 
-      {/* Article Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-text mb-6">
-        <Link href="/" className="hover:text-ink">
-          Home
-        </Link>
-        <span>/</span>
-        <Link href={`/category/${post.categorySlug}`} className="hover:text-orange text-orange">
-          {post.category}
-        </Link>
-      </nav>
+      {/* Article Breadcrumb & Language Switcher Bar */}
+      <div className="flex items-center justify-between gap-4 mb-6">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-text">
+          <Link href="/" className="hover:text-ink">
+            {t.article.homeBreadcrumb}
+          </Link>
+          <span>/</span>
+          <Link href={`/category/${localizedPost.categorySlug}`} className="hover:text-orange text-orange">
+            {localizedPost.category}
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] text-muted-text hidden sm:inline">{t.nav.editionLanguage}:</span>
+          <LanguageSwitcher />
+        </div>
+      </div>
 
       {/* Title */}
       <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-ink leading-[1.08] tracking-tight">
-        {post.title}
+        {localizedPost.title}
       </h1>
 
       {/* Subtitle / Excerpt */}
       <p className="mt-5 text-lg sm:text-xl text-muted-text leading-relaxed">
-        {post.excerpt}
+        {localizedPost.excerpt}
       </p>
 
       {/* Author Meta Row */}
@@ -143,21 +157,21 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
         <div className="flex items-center gap-3">
           <div className="relative h-11 w-11 rounded-full overflow-hidden bg-muted border border-border">
             <Image
-              src={post.author.avatar || "/avatars/avatar_maya_patel.jpg"}
-              alt={post.author.name}
+              src={localizedPost.author?.avatar || "/avatars/avatar_maya_patel.jpg"}
+              alt={localizedPost.author?.name || "Reviewer"}
               fill
               className="object-cover"
             />
           </div>
           <div>
             <div className="font-semibold text-ink text-sm flex items-center gap-1.5">
-              <span>{post.author.name}</span>
+              <span>{localizedPost.author?.name || "Rohan Ray"}</span>
               <span className="inline-flex items-center rounded-full bg-peach text-ink text-[10px] px-2 py-0.2 font-medium">
-                {post.author.role || "Lead Reviewer"}
+                {localizedPost.author?.role || t.article.leadReviewer}
               </span>
             </div>
             <div className="text-muted-text">
-              Published {post.publishedAt} • {post.readingTime}
+              {t.article.published} {localizedPost.publishedAt} • {localizedPost.readingTime}
             </div>
           </div>
         </div>
@@ -171,7 +185,7 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
                 ? "border-red-400 bg-red-50 text-red-600"
                 : "border-border bg-card text-ink hover:border-red-300 hover:text-red-500"
             }`}
-            aria-label="Like this review"
+            aria-label={t.article.like}
           >
             <span>{hasLiked ? "❤️" : "🤍"}</span>
             <span>{likes.toLocaleString()}</span>
@@ -182,7 +196,7 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
             onClick={handleCopyLink}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-1.5 text-xs font-semibold text-ink hover:border-orange transition cursor-pointer"
           >
-            <span>{copySuccess ? "✓ Copied" : "🔗 Share"}</span>
+            <span>{copySuccess ? t.article.copied : `🔗 ${t.article.share}`}</span>
           </button>
         </div>
       </div>
@@ -190,14 +204,50 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
       {/* Featured Artwork Image */}
       <div className="my-8 relative aspect-16/9 w-full overflow-hidden rounded-2xl border border-border bg-muted shadow-sm">
         <Image
-          src={post.image || "/art/dating_comparison_guide.jpg"}
-          alt={post.title}
+          src={localizedPost.image || "/art/dating_comparison_guide.jpg"}
+          alt={localizedPost.title}
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 800px"
           className="object-cover"
         />
+        {localizedPost.badge && (
+          <div className="absolute top-4 left-4">
+            <span className="rounded-md bg-navy/90 backdrop-blur-xs px-3 py-1.5 text-xs font-bold text-white shadow-md">
+              {localizedPost.badge}
+            </span>
+          </div>
+        )}
       </div>
+
+      {/* Multilingual Executive Summary Callout Box when reading in ES, DE, or FR */}
+      {locale !== "en" && (
+        <div className="my-8 rounded-2xl border border-orange/40 bg-orange-soft/30 p-6 sm:p-7 shadow-xs">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-orange mb-2">
+            <span>📌</span>
+            <span>
+              {locale === "es"
+                ? "Resumen Ejecutivo y Puntos Clave de la Investigación"
+                : locale === "de"
+                ? "Zusammenfassung des Prüfberichts & Wichtigste Erkenntnisse"
+                : "Synthèse Exécutive et Points Clés du Rapport d'Audit"}
+            </span>
+          </div>
+          <h3 className="font-serif text-xl sm:text-2xl text-ink mb-3 font-semibold">
+            {localizedPost.title}
+          </h3>
+          <p className="text-sm sm:text-base text-ink/90 leading-relaxed">
+            {localizedPost.excerpt}
+          </p>
+          <div className="mt-4 pt-4 border-t border-orange/20 flex flex-wrap items-center gap-4 text-xs text-muted-text">
+            <span>✓ {t.comparison.updatedToday}</span>
+            <span>•</span>
+            <span>🛡️ {localizedPost.category}</span>
+            <span>•</span>
+            <span>⏱️ {localizedPost.readingTime}</span>
+          </div>
+        </div>
+      )}
 
       {/* Rich Article Body Content */}
       <article className="max-w-none text-ink text-base sm:text-lg leading-relaxed">
@@ -227,91 +277,72 @@ export const ArticleInteractiveView: React.FC<ArticleInteractiveViewProps> = ({
       {/* Moderated Guest Comments Section */}
       <section id="discussion" className="scroll-mt-24 mt-16 border-t border-border pt-12">
         <div className="flex items-baseline justify-between mb-6">
-          <h3 className="font-serif text-2xl text-ink">Reader Observations & Reflections</h3>
-          <span className="text-xs text-muted-text">Comments are moderated before appearing</span>
+          <h3 className="font-serif text-2xl text-ink">{t.article.commentsHeading}</h3>
+          <span className="text-xs text-muted-text">{t.article.commentsNote}</span>
         </div>
 
         {commentStatus === "success" ? (
           <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50 p-6 text-emerald-800 text-sm">
-            <div className="font-semibold text-base mb-1">Thank you for submitting your observation.</div>
-            Your note has been sent to the moderation desk and will appear once verified.
+            <div className="font-semibold text-base mb-1">{t.article.thankYou}</div>
+            {t.article.thankYouNote}
           </div>
         ) : (
           <form onSubmit={handleCommentSubmit} className="space-y-4 rounded-2xl border border-border bg-card p-6 shadow-xs">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-ink mb-1">Your Name</label>
+                <label className="block text-xs font-semibold text-ink mb-1">{t.article.nameLabel}</label>
                 <input
                   type="text"
                   required
                   value={authorName}
                   onChange={(e) => setAuthorName(e.target.value)}
-                  placeholder="e.g. Alex Morgan"
-                  className="w-full rounded-xl bg-paper px-3.5 py-2.5 text-sm border border-border focus:border-orange focus:outline-none"
+                  placeholder="e.g. Julian M."
+                  className="w-full rounded-xl bg-paper px-4 py-2.5 text-sm border border-border focus:border-orange focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-ink mb-1">Email (kept strictly private)</label>
+                <label className="block text-xs font-semibold text-ink mb-1">{t.article.emailLabel}</label>
                 <input
                   type="email"
                   required
                   value={authorEmail}
                   onChange={(e) => setAuthorEmail(e.target.value)}
-                  placeholder="alex@example.com"
-                  className="w-full rounded-xl bg-paper px-3.5 py-2.5 text-sm border border-border focus:border-orange focus:outline-none"
+                  placeholder="julian@example.com"
+                  className="w-full rounded-xl bg-paper px-4 py-2.5 text-sm border border-border focus:border-orange focus:outline-none"
                 />
               </div>
             </div>
-
             <div>
-              <label className="block text-xs font-semibold text-ink mb-1">Your Note or Experience</label>
+              <label className="block text-xs font-semibold text-ink mb-1">{t.article.bodyLabel}</label>
               <textarea
                 required
                 rows={4}
                 value={commentBody}
                 onChange={(e) => setCommentBody(e.target.value)}
-                placeholder="Share your experience with payout speed, match quality, or platform support..."
-                className="w-full rounded-xl bg-paper px-3.5 py-2.5 text-sm border border-border focus:border-orange focus:outline-none"
+                placeholder="Share your verified experience or observation with this platform..."
+                className="w-full rounded-xl bg-paper p-4 text-sm border border-border focus:border-orange focus:outline-none leading-relaxed"
               />
             </div>
-
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-[11px] text-muted-text">
-                Your email address will never be published or shared.
-              </span>
-              <button
-                type="submit"
-                disabled={commentStatus === "submitting"}
-                className="rounded-xl bg-navy hover:bg-navy-soft px-5 py-2.5 text-xs font-bold text-white shadow-button transition cursor-pointer"
-              >
-                {commentStatus === "submitting" ? "Submitting..." : "Submit for Moderation"}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={commentStatus === "submitting"}
+              className="rounded-xl bg-ink hover:bg-ink/90 text-white px-6 py-3 text-xs font-bold shadow-button transition cursor-pointer"
+            >
+              {commentStatus === "submitting" ? t.article.submittingBtn : t.article.submitBtn}
+            </button>
           </form>
         )}
       </section>
 
-      {/* Related Articles */}
+      {/* Related Investigations Grid */}
       {relatedPosts.length > 0 && (
         <section className="mt-16 border-t border-border pt-12">
-          <h3 className="font-serif text-2xl text-ink mb-6">Further Reviews & Guides</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {relatedPosts.map((related) => (
-              <Link
-                key={related.id}
-                href={`/blog/${related.slug}`}
-                className="group rounded-2xl border border-border bg-card p-5 shadow-xs transition hover:border-orange"
-              >
-                <div className="text-[10px] font-bold uppercase tracking-wider text-orange">
-                  {related.category}
-                </div>
-                <h4 className="mt-2 font-serif text-lg text-ink group-hover:text-orange transition-colors">
-                  {related.title}
-                </h4>
-                <p className="mt-2 text-xs text-muted-text line-clamp-2">
-                  {related.excerpt}
-                </p>
-              </Link>
+          <h3 className="font-serif text-2xl text-ink mb-6">
+            {t.article.relatedHeading}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {relatedPosts.map((rel) => (
+              <StoryCard key={rel.id} post={rel} />
             ))}
           </div>
         </section>
