@@ -1,13 +1,3 @@
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
-
 # SearchFIT SEO & AEO Operating Directives
 
 When the user asks about their blog, article content, or SEO/AEO optimization:
@@ -51,4 +41,3 @@ Whenever analyzing, writing, or optimizing a blog post, always execute this full
 
 8. **Post-Publish Telemetry & Analytics Tracking**:
    - Specify the exact Google Analytics 4 (GA4) and Google Search Console (GSC) metrics to monitor (e.g., query impressions, CTR, average SERP position, engagement duration, scroll depth milestones).
-

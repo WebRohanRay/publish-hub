@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "searchfit": {
+      "type": "http",
+      "url": "https://api.searchfit.ai/mcp",
+      "serverUrl": "https://api.searchfit.ai/mcp"
+    }
+  }
+}
