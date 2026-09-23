@@ -1,13 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { dataStore, MediaAsset } from "@/lib/dataStore";
+import { MediaAsset } from "@/lib/dataStore";
 
 export default function AdminMediaPage() {
-  const [assets, setAssets] = useState<MediaAsset[]>(dataStore.getAllMedia());
+  const [assets, setAssets] = useState<MediaAsset[]>([]);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const [selectedAsset, setSelectedAsset] = useState<MediaAsset | null>(null);
+
+  const fetchMedia = async () => {
+    try {
+      const res = await fetch("/api/admin/media");
+      if (res.ok) {
+        const data = await res.json();
+        setAssets(data.assets || []);
+      }
+    } catch (err) {
+      console.error("Failed to load media assets:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMedia();
+  }, []);
 
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
@@ -15,12 +34,20 @@ export default function AdminMediaPage() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleDelete = (id: string) => {
-    dataStore.deleteMedia(id);
-    setAssets(dataStore.getAllMedia());
-    setSelectedAsset(null);
-    setToast("Asset deleted from library.");
-    setTimeout(() => setToast(null), 3000);
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/media?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchMedia();
+        setSelectedAsset(null);
+        setToast("Asset deleted from library.");
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to delete asset.");
+    }
   };
 
   return (

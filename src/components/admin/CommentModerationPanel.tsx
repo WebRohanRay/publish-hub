@@ -15,14 +15,28 @@ export const CommentModerationPanel: React.FC<CommentModerationPanelProps> = ({
   const [comments, setComments] = useState(initialComments);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const handleApprove = (id: string, authorName: string) => {
+  const handleApprove = async (id: string, authorName: string) => {
+    try {
+      await fetch("/api/admin/comments", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: "approved" }),
+      });
+    } catch {}
     dataStore.updateCommentStatus(id, "approved");
     setComments((prev) => prev.filter((c) => c.id !== id));
     setToastMessage(`Comment from ${authorName} approved.`);
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleSpam = (id: string) => {
+  const handleSpam = async (id: string) => {
+    try {
+      await fetch("/api/admin/comments", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: "spam" }),
+      });
+    } catch {}
     dataStore.updateCommentStatus(id, "spam");
     setComments((prev) => prev.filter((c) => c.id !== id));
     setToastMessage("Marked comment as spam.");

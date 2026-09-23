@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Subscriber {
   id: string;
@@ -10,17 +10,44 @@ interface Subscriber {
   date: string;
 }
 
-const INITIAL_SUBSCRIBERS: Subscriber[] = [
-  { id: "sub-1", email: "elena.r@studio.design", status: "active", source: "Sunday Edition", date: "Sep 20, 2026" },
-  { id: "sub-2", email: "marcus.c@systems.io", status: "active", source: "Article Footer", date: "Sep 19, 2026" },
-  { id: "sub-3", email: "liam.s@venture.co", status: "active", source: "Sunday Edition", date: "Sep 18, 2026" },
-  { id: "sub-4", email: "oliver.g@sportsbeat.uk", status: "active", source: "Dating Review", date: "Sep 17, 2026" },
-  { id: "sub-5", email: "sophia.m@tech.com", status: "active", source: "Casino Review", date: "Sep 16, 2026" },
-];
-
 export default function AdminSubscribersPage() {
-  const [subscribers] = useState<Subscriber[]>(INITIAL_SUBSCRIBERS);
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [toast, setToast] = useState<string | null>(null);
+
+  const fetchSubscribers = async () => {
+    try {
+      const res = await fetch("/api/admin/subscribers");
+      if (res.ok) {
+        const data = await res.json();
+        setSubscribers(data.subscribers || []);
+      }
+    } catch (err) {
+      console.error("Failed to load subscribers:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubscribers();
+  }, []);
+
+  const handleDelete = async (id: string, email: string) => {
+    try {
+      const res = await fetch(`/api/admin/subscribers?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchSubscribers();
+        setToast(`Removed ${email} from subscriber list.`);
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to remove subscriber.");
+    }
+  };
 
   const filtered = subscribers.filter((s) =>
     s.email.toLowerCase().includes(search.toLowerCase())
@@ -28,6 +55,12 @@ export default function AdminSubscribersPage() {
 
   return (
     <div className="space-y-6 max-w-4xl">
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 rounded-xl bg-ink text-white px-4 py-2.5 text-xs font-semibold shadow-lg">
+          ✓ {toast}
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-6">
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider text-orange">
@@ -37,7 +70,7 @@ export default function AdminSubscribersPage() {
             Sunday Edition Subscribers
           </h1>
           <p className="text-xs text-muted-text mt-1">
-            Total active newsletter subscribers: <strong>12,410</strong> readers.
+            Total active newsletter subscribers: <strong>{subscribers.length}</strong> readers.
           </p>
         </div>
 
@@ -57,7 +90,8 @@ export default function AdminSubscribersPage() {
               <th className="py-3 px-4">Subscriber Email</th>
               <th className="py-3 px-3">Status</th>
               <th className="py-3 px-3">Acquisition Source</th>
-              <th className="py-3 px-4 text-right">Subscribed Date</th>
+              <th className="py-3 px-4">Subscribed Date</th>
+              <th className="py-3 px-4 text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
@@ -70,7 +104,15 @@ export default function AdminSubscribersPage() {
                   </span>
                 </td>
                 <td className="py-3 px-3 text-muted-text">{sub.source}</td>
-                <td className="py-3 px-4 text-right text-muted-text">{sub.date}</td>
+                <td className="py-3 px-4 text-muted-text">{sub.date}</td>
+                <td className="py-3 px-4 text-right">
+                  <button
+                    onClick={() => handleDelete(sub.id, sub.email)}
+                    className="text-xs text-crimson hover:underline font-semibold"
+                  >
+                    Remove
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

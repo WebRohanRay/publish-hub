@@ -1,39 +1,75 @@
 "use client";
 
-import React, { useState } from "react";
-import { dataStore } from "@/lib/dataStore";
+import React, { useState, useEffect } from "react";
 import { Category } from "@/data/seedData";
 
 export default function AdminCategoriesPage() {
-  const [categories, setCategories] = useState<Category[]>(dataStore.getAllCategories());
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [toast, setToast] = useState<string | null>(null);
 
-  const handleCreate = (e: React.FormEvent) => {
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/admin/categories");
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data.categories || []);
+      }
+    } catch (err) {
+      console.error("Failed to load categories:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) return;
 
-    dataStore.saveCategory({
-      name,
-      slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      description,
-    });
+    try {
+      const res = await fetch("/api/admin/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          slug: slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+          description,
+        }),
+      });
 
-    setCategories(dataStore.getAllCategories());
-    setName("");
-    setSlug("");
-    setDescription("");
-    setToast("Category added successfully.");
-    setTimeout(() => setToast(null), 3000);
+      if (res.ok) {
+        await fetchCategories();
+        setName("");
+        setSlug("");
+        setDescription("");
+        setToast("Category added successfully.");
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to create category.");
+    }
   };
 
-  const handleDelete = (id: string, catName: string) => {
-    dataStore.deleteCategory(id);
-    setCategories(dataStore.getAllCategories());
-    setToast(`Deleted category '${catName}'.`);
-    setTimeout(() => setToast(null), 3000);
+  const handleDelete = async (id: string, catName: string) => {
+    try {
+      const res = await fetch(`/api/admin/categories?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchCategories();
+        setToast(`Deleted category '${catName}'.`);
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to delete category.");
+    }
   };
 
   return (

@@ -1,20 +1,61 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function AdminSettingsPage() {
-  const [siteName, setSiteName] = useState("Atlas Journal");
-  const [contactEmail, setContactEmail] = useState("editorial@atlasjournal.io");
+  const [siteName, setSiteName] = useState("NoxWire");
+  const [contactEmail, setContactEmail] = useState("editor@noxwire.io");
   const [commentsEnabled, setCommentsEnabled] = useState(true);
   const [requireModeration, setRequireModeration] = useState(true);
   const [guestComments, setGuestComments] = useState(true);
-  const [defaultMetaTitle, setDefaultMetaTitle] = useState("Atlas Journal — Ideas that make tomorrow clearer");
+  const [defaultMetaTitle, setDefaultMetaTitle] = useState("NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech");
   const [toast, setToast] = useState<string | null>(null);
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch("/api/admin/settings");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.settings) {
+            setSiteName(data.settings.siteName || "NoxWire");
+            setContactEmail(data.settings.contactEmail || "editor@noxwire.io");
+            setCommentsEnabled(data.settings.commentsEnabled ?? true);
+            setRequireModeration(data.settings.commentsRequireModeration ?? true);
+            setGuestComments(data.settings.allowGuestComments ?? true);
+            setDefaultMetaTitle(data.settings.defaultMetaTitle || "NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech");
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load settings:", err);
+      }
+    }
+    loadSettings();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setToast("Settings successfully updated.");
-    setTimeout(() => setToast(null), 3000);
+    try {
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          siteName,
+          contactEmail,
+          commentsEnabled,
+          commentsRequireModeration: requireModeration,
+          allowGuestComments: guestComments,
+          defaultMetaTitle,
+        }),
+      });
+
+      if (res.ok) {
+        setToast("Settings successfully saved to Supabase.");
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to save settings.");
+    }
   };
 
   return (

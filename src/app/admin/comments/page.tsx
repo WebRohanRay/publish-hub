@@ -1,13 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
-import { dataStore } from "@/lib/dataStore";
+import React, { useState, useEffect } from "react";
 import { CommentItem } from "@/data/seedData";
 
 export default function AdminCommentsPage() {
   const [activeTab, setActiveTab] = useState<string>("all");
-  const [comments, setComments] = useState<CommentItem[]>(dataStore.getAllComments());
+  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
+
+  const fetchComments = async () => {
+    try {
+      const res = await fetch("/api/admin/comments");
+      if (res.ok) {
+        const data = await res.json();
+        setComments(data.comments || []);
+      }
+    } catch (err) {
+      console.error("Failed to load comments:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  }, []);
 
   const filterTabs = [
     { label: "All Comments", value: "all", count: comments.length },
@@ -22,18 +40,36 @@ export default function AdminCommentsPage() {
     return c.status === activeTab;
   });
 
-  const handleUpdate = (id: string, newStatus: "approved" | "spam" | "trash" | "pending") => {
-    dataStore.updateCommentStatus(id, newStatus);
-    setComments([...dataStore.getAllComments()]);
-    setToast(`Comment marked as ${newStatus}.`);
-    setTimeout(() => setToast(null), 3000);
+  const handleUpdate = async (id: string, newStatus: "approved" | "spam" | "trash" | "pending") => {
+    try {
+      const res = await fetch("/api/admin/comments", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+      if (res.ok) {
+        await fetchComments();
+        setToast(`Comment marked as ${newStatus}.`);
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to update comment status.");
+    }
   };
 
-  const handleDelete = (id: string) => {
-    dataStore.deleteComment(id);
-    setComments([...dataStore.getAllComments()]);
-    setToast("Comment permanently deleted.");
-    setTimeout(() => setToast(null), 3000);
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/admin/comments?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchComments();
+        setToast("Comment permanently deleted.");
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to delete comment.");
+    }
   };
 
   return (

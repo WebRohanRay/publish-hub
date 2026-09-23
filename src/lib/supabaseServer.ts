@@ -108,6 +108,28 @@ export async function getPostBySlugServer(slug: string): Promise<Post | null> {
   }
 }
 
+export async function getPostByIdServer(id: string): Promise<Post | null> {
+  if (!isSupabaseConfigured()) {
+    return dataStore.getPostById(id) || null;
+  }
+
+  try {
+    const { data, error } = await supabaseServer
+      .from("posts")
+      .select("*, categories(name, slug), profiles(display_name, avatar_url)")
+      .eq("id", id)
+      .single();
+
+    if (error || !data) {
+      return dataStore.getPostById(id) || null;
+    }
+
+    return mapPostFromDb(data);
+  } catch {
+    return dataStore.getPostById(id) || null;
+  }
+}
+
 export async function createPostServer(postData: Partial<Post>): Promise<Post> {
   if (!isSupabaseConfigured()) {
     return dataStore.savePost(postData);
@@ -396,4 +418,357 @@ export async function recordViewEventServer(postId: string, tokenHash: string): 
 
 export async function getActivityLogsServer(): Promise<ActivityLog[]> {
   return dataStore.getActivityLogs();
+}
+
+// ----------------------------------------------------------------------------
+// ADMIN DASHBOARD STATS
+// ----------------------------------------------------------------------------
+export async function getDashboardStatsServer() {
+  if (!isSupabaseConfigured()) {
+    const posts = dataStore.getAllPosts();
+    const comments = dataStore.getAllComments();
+    const pending = comments.filter((c) => c.status === "pending");
+    return {
+      totalReads: posts.reduce((acc, p) => acc + (p.reads || 0), 0),
+      totalComments: comments.length,
+      pendingCommentsCount: pending.length,
+      totalLikes: posts.reduce((acc, p) => acc + (p.likes || 0), 0),
+      publishedPostsCount: posts.filter((p) => p.status === "published").length,
+      subscribersCount: 12410,
+      posts: posts.slice(0, 6),
+      pendingComments: pending.slice(0, 5),
+      activity: dataStore.getActivityLogs().slice(0, 5),
+    };
+  }
+
+  try {
+    const [postsRes, commentsCountRes, pendingRes, subRes] = await Promise.all([
+      supabaseServer
+        .from("posts")
+        .select("id, title, slug, status, view_count, like_count, comment_count, published_at, categories(name)")
+        .order("created_at", { ascending: false }),
+      supabaseServer.from("comments").select("id", { count: "exact", head: true }),
+      supabaseServer
+        .from("comments")
+        .select("*, posts(title)")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(5),
+      supabaseServer.from("newsletter_subscribers").select("id", { count: "exact", head: true }).eq("status", "active"),
+    ]);
+
+    const rawPosts = postsRes.data || [];
+    const totalReads = rawPosts.reduce((acc: number, p: any) => acc + (Number(p.view_count) || 0), 0);
+    const totalLikes = rawPosts.reduce((acc: number, p: any) => acc + (Number(p.like_count) || 0), 0);
+    const publishedCount = rawPosts.filter((p: any) => p.status === "published").length;
+    const pendingList = (pendingRes.data || []).map((c: any) => ({
+      id: c.id,
+      postId: c.post_id,
+      postTitle: c.posts?.title || "Audited Investigation",
+      authorName: c.author_name,
+      authorEmail: c.author_email,
+      body: c.body,
+      createdAt: new Date(c.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      status: c.status,
+    }));
+
+    return {
+      totalReads,
+      totalComments: commentsCountRes.count || 0,
+      pendingCommentsCount: pendingList.length,
+      totalLikes,
+      publishedPostsCount: publishedCount,
+      subscribersCount: subRes.count || 0,
+      posts: rawPosts.slice(0, 6).map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        slug: p.slug,
+        status: p.status,
+        category: p.categories?.name || "General",
+        reads: Number(p.view_count) || 0,
+        likes: Number(p.like_count) || 0,
+        publishedAt: p.published_at ? new Date(p.published_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Draft",
+      })),
+      pendingComments: pendingList,
+      activity: dataStore.getActivityLogs().slice(0, 5),
+    };
+  } catch (err) {
+    console.error("Dashboard stats query error:", err);
+    return {
+      totalReads: 0,
+      totalComments: 0,
+      pendingCommentsCount: 0,
+      totalLikes: 0,
+      publishedPostsCount: 0,
+      subscribersCount: 0,
+      posts: [],
+      pendingComments: [],
+      activity: [],
+    };
+  }
+}
+
+// ----------------------------------------------------------------------------
+// SUBSCRIBERS
+// ----------------------------------------------------------------------------
+export async function getSubscribersServer() {
+  if (!isSupabaseConfigured()) {
+    return [
+      { id: "sub-1", email: "elena.r@studio.design", status: "active", source: "Sunday Edition", date: "Sep 20, 2026" },
+      { id: "sub-2", email: "marcus.c@systems.io", status: "active", source: "Article Footer", date: "Sep 19, 2026" },
+      { id: "sub-3", email: "liam.s@venture.co", status: "active", source: "Sunday Edition", date: "Sep 18, 2026" },
+    ];
+  }
+
+  try {
+    const { data, error } = await supabaseServer
+      .from("newsletter_subscribers")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data) return [];
+    return data.map((s: any) => ({
+      id: s.id,
+      email: s.email,
+      status: s.status,
+      source: s.source || "Website",
+      date: new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function deleteSubscriberServer(id: string) {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabaseServer.from("newsletter_subscribers").delete().eq("id", id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// TAGS
+// ----------------------------------------------------------------------------
+export async function getTagsServer() {
+  if (!isSupabaseConfigured()) {
+    return [
+      { id: "t-1", name: "Dating Apps", slug: "dating-apps", count: 38 },
+      { id: "t-2", name: "Online Casino", slug: "online-casino", count: 46 },
+      { id: "t-3", name: "Sports Betting", slug: "sports-betting", count: 29 },
+    ];
+  }
+
+  try {
+    const { data, error } = await supabaseServer.from("tags").select("*").order("name", { ascending: true });
+    if (error || !data) return [];
+    return data.map((t: any) => ({
+      id: t.id,
+      name: t.name,
+      slug: t.slug,
+      count: 0,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function createTagServer(name: string, slug?: string) {
+  const cleanSlug = (slug || name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+  if (!isSupabaseConfigured()) {
+    return { id: `tag-${Date.now()}`, name, slug: cleanSlug, count: 0 };
+  }
+
+  try {
+    const { data, error } = await supabaseServer
+      .from("tags")
+      .insert({ name, slug: cleanSlug })
+      .select()
+      .single();
+    if (error || !data) return null;
+    return { id: data.id, name: data.name, slug: data.slug, count: 0 };
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteTagServer(id: string) {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabaseServer.from("tags").delete().eq("id", id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// MEDIA ASSETS
+// ----------------------------------------------------------------------------
+export async function getMediaAssetsServer() {
+  if (!isSupabaseConfigured()) {
+    return dataStore.getAllMedia();
+  }
+
+  try {
+    const { data, error } = await supabaseServer
+      .from("media_assets")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return dataStore.getAllMedia();
+    }
+
+    return data.map((m: any) => ({
+      id: m.id,
+      filename: m.filename,
+      publicUrl: m.public_url,
+      fileSizeBytes: Number(m.file_size_bytes) || 500000,
+      width: m.width || 1920,
+      height: m.height || 1080,
+      mimeType: m.mime_type || "image/jpeg",
+      altText: m.alt_text || "",
+      createdAt: new Date(m.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    }));
+  } catch {
+    return dataStore.getAllMedia();
+  }
+}
+
+export async function deleteMediaAssetServer(id: string) {
+  if (!isSupabaseConfigured()) {
+    dataStore.deleteMedia(id);
+    return true;
+  }
+
+  try {
+    const { error } = await supabaseServer.from("media_assets").delete().eq("id", id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// CATEGORIES MUTATION
+// ----------------------------------------------------------------------------
+export async function createCategoryServer(cat: { name: string; slug?: string; description?: string }) {
+  const cleanSlug = (cat.slug || cat.name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+  if (!isSupabaseConfigured()) {
+    return dataStore.saveCategory({ name: cat.name, slug: cleanSlug, description: cat.description || "" });
+  }
+
+  try {
+    const { data, error } = await supabaseServer
+      .from("categories")
+      .insert({ name: cat.name, slug: cleanSlug, description: cat.description || "" })
+      .select()
+      .single();
+
+    if (error || !data) return null;
+    return { id: data.id, name: data.name, slug: data.slug, description: data.description || "", count: 0 };
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteCategoryServer(id: string) {
+  if (!isSupabaseConfigured()) {
+    dataStore.deleteCategory(id);
+    return true;
+  }
+
+  try {
+    const { error } = await supabaseServer.from("categories").delete().eq("id", id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// COMMENTS MODERATION
+// ----------------------------------------------------------------------------
+export async function updateCommentStatusServer(id: string, status: "approved" | "spam" | "trash" | "pending") {
+  if (!isSupabaseConfigured()) {
+    dataStore.updateCommentStatus(id, status);
+    return true;
+  }
+
+  try {
+    const { error } = await supabaseServer.from("comments").update({ status }).eq("id", id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteCommentServer(id: string) {
+  if (!isSupabaseConfigured()) {
+    dataStore.deleteComment(id);
+    return true;
+  }
+
+  try {
+    const { error } = await supabaseServer.from("comments").delete().eq("id", id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// SITE SETTINGS
+// ----------------------------------------------------------------------------
+export async function getSiteSettingsServer() {
+  const defaults = {
+    siteName: "NoxWire",
+    description: "The Unfiltered Journal of Dating, iGaming & Adult Tech.",
+    contactEmail: "editor@noxwire.io",
+    commentsEnabled: true,
+    commentsRequireModeration: true,
+    allowGuestComments: true,
+    defaultMetaTitle: "NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech",
+  };
+
+  if (!isSupabaseConfigured()) return defaults;
+
+  try {
+    const { data, error } = await supabaseServer.from("site_settings").select("*").eq("key", "default").single();
+    if (error || !data) return defaults;
+    return {
+      siteName: data.site_name || defaults.siteName,
+      description: data.description || defaults.description,
+      contactEmail: data.contact_email || defaults.contactEmail,
+      commentsEnabled: data.comments_enabled ?? defaults.commentsEnabled,
+      commentsRequireModeration: data.comments_require_moderation ?? defaults.commentsRequireModeration,
+      allowGuestComments: data.allow_guest_comments ?? defaults.allowGuestComments,
+      defaultMetaTitle: data.default_meta_title || defaults.defaultMetaTitle,
+    };
+  } catch {
+    return defaults;
+  }
+}
+
+export async function updateSiteSettingsServer(settings: any) {
+  if (!isSupabaseConfigured()) return true;
+  try {
+    const { error } = await supabaseServer.from("site_settings").upsert({
+      key: "default",
+      site_name: settings.siteName,
+      description: settings.description,
+      contact_email: settings.contactEmail,
+      comments_enabled: settings.commentsEnabled,
+      comments_require_moderation: settings.commentsRequireModeration,
+      allow_guest_comments: settings.allowGuestComments,
+      default_meta_title: settings.defaultMetaTitle,
+      updated_at: new Date().toISOString(),
+    });
+    return !error;
+  } catch {
+    return false;
+  }
 }

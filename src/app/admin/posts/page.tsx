@@ -1,20 +1,37 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { dataStore } from "@/lib/dataStore";
 import { Post } from "@/data/seedData";
 
 export default function AdminPostsPage() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [posts, setPosts] = useState<Post[]>(dataStore.getAllPosts());
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const [actionToast, setActionToast] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
 
-  const isCleared = dataStore.isDemoCleared();
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch("/api/posts?status=all");
+      if (res.ok) {
+        const data = await res.json();
+        const list = Array.isArray(data) ? data : Array.isArray(data?.posts) ? data.posts : [];
+        setPosts(list);
+      }
+    } catch (err) {
+      console.error("Failed to fetch posts:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const filterTabs = [
     { label: "All posts", value: "all", count: posts.length },
@@ -33,32 +50,51 @@ export default function AdminPostsPage() {
     return matchesTab && matchesSearch;
   });
 
-  const handleTrash = (id: string, title: string) => {
-    dataStore.deletePost(id, false);
-    setPosts(dataStore.getAllPosts());
-    setActionToast(`Moved '${title}' to trash.`);
-    setTimeout(() => setActionToast(null), 3000);
+  const handleTrash = async (id: string, title: string) => {
+    try {
+      await fetch(`/api/posts/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "trash" }),
+      });
+      await fetchPosts();
+      setActionToast(`Moved '${title}' to trash.`);
+      setTimeout(() => setActionToast(null), 3000);
+    } catch {
+      setActionToast("Failed to move to trash.");
+    }
   };
 
-  const handleDuplicate = (post: Post) => {
-    const dup = dataStore.savePost({
-      ...post,
-      id: undefined,
-      title: `${post.title} (Copy)`,
-      status: "draft",
-    });
-    setPosts(dataStore.getAllPosts());
-    setActionToast(`Duplicated article as '${dup.title}'.`);
-    setTimeout(() => setActionToast(null), 3000);
+  const handleDuplicate = async (post: Post) => {
+    try {
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...post,
+          id: undefined,
+          title: `${post.title} (Copy)`,
+          slug: `${post.slug}-copy-${Date.now().toString().slice(-4)}`,
+          status: "draft",
+        }),
+      });
+      if (res.ok) {
+        await fetchPosts();
+        setActionToast(`Duplicated article as '${post.title} (Copy)'.`);
+        setTimeout(() => setActionToast(null), 3000);
+      }
+    } catch {
+      setActionToast("Failed to duplicate post.");
+    }
   };
 
   const handleClearDemoData = async () => {
     setIsClearing(true);
     try {
       await fetch("/api/admin/clear-demo-data", { method: "POST" });
+      await fetchPosts();
     } catch {}
 
-    dataStore.clearDemoData();
     setPosts([]);
     setIsClearing(false);
     setShowClearConfirm(false);
@@ -66,10 +102,9 @@ export default function AdminPostsPage() {
     setTimeout(() => setActionToast(null), 4000);
   };
 
-  const handleRestoreCurated = () => {
-    dataStore.resetToCuratedData();
-    setPosts(dataStore.getAllPosts());
-    setActionToast("Restored curated review templates.");
+  const handleRestoreCurated = async () => {
+    await fetchPosts();
+    setActionToast("Synchronized with Supabase database.");
     setTimeout(() => setActionToast(null), 3000);
   };
 

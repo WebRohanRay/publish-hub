@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface Tag {
   id: string;
@@ -9,39 +9,64 @@ interface Tag {
   count: number;
 }
 
-const INITIAL_TAGS: Tag[] = [
-  { id: "t-1", name: "Dating Apps", slug: "dating-apps", count: 38 },
-  { id: "t-2", name: "Online Casino", slug: "online-casino", count: 46 },
-  { id: "t-3", name: "Sports Betting", slug: "sports-betting", count: 29 },
-  { id: "t-4", name: "VIP Bonuses", slug: "vip-bonuses", count: 18 },
-  { id: "t-5", name: "Matchmaking", slug: "matchmaking", count: 22 },
-  { id: "t-6", name: "Systems Thinking", slug: "systems-thinking", count: 14 },
-  { id: "t-7", name: "UI Design", slug: "ui-design", count: 19 },
-];
-
 export default function AdminTagsPage() {
-  const [tags, setTags] = useState<Tag[]>(INITIAL_TAGS);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [toast, setToast] = useState<string | null>(null);
 
-  const handleAddTag = (e: React.FormEvent) => {
+  const fetchTags = async () => {
+    try {
+      const res = await fetch("/api/admin/tags");
+      if (res.ok) {
+        const data = await res.json();
+        setTags(data.tags || []);
+      }
+    } catch (err) {
+      console.error("Failed to load tags:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
+  const handleAddTag = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) return;
 
-    const newTag: Tag = {
-      id: `tag-${Date.now()}`,
-      name,
-      slug: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      count: 0,
-    };
-    setTags([...tags, newTag]);
-    setName("");
-    setToast(`Tag '${newTag.name}' created.`);
-    setTimeout(() => setToast(null), 3000);
+    try {
+      const res = await fetch("/api/admin/tags", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) {
+        await fetchTags();
+        setName("");
+        setToast(`Tag '${name}' created.`);
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to create tag.");
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setTags(tags.filter((t) => t.id !== id));
+  const handleDelete = async (id: string, tagName: string) => {
+    try {
+      const res = await fetch(`/api/admin/tags?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        await fetchTags();
+        setToast(`Tag '${tagName}' deleted.`);
+        setTimeout(() => setToast(null), 3000);
+      }
+    } catch {
+      setToast("Failed to delete tag.");
+    }
   };
 
   return (
@@ -106,7 +131,7 @@ export default function AdminTagsPage() {
                     {tag.count}
                   </span>
                   <button
-                    onClick={() => handleDelete(tag.id)}
+                    onClick={() => handleDelete(tag.id, tag.name)}
                     className="text-slate-400 hover:text-red-500 text-[11px] ml-1"
                   >
                     ✕

@@ -72,7 +72,7 @@ export const PostEditorForm: React.FC<PostEditorFormProps> = ({ initialPost }) =
     }
   };
 
-  const handleSave = (publishNow: boolean = false) => {
+  const handleSave = async (publishNow: boolean = false) => {
     const newStatus = publishNow ? "published" : status;
     const prosArray = prosText
       .split("\n")
@@ -83,8 +83,7 @@ export const PostEditorForm: React.FC<PostEditorFormProps> = ({ initialPost }) =
       .map((c) => c.trim())
       .filter(Boolean);
 
-    const saved = dataStore.savePost({
-      id: initialPost?.id,
+    const payload = {
       title,
       slug: slug || "untitled-article",
       excerpt,
@@ -100,6 +99,30 @@ export const PostEditorForm: React.FC<PostEditorFormProps> = ({ initialPost }) =
       affiliateUrl,
       pros: prosArray,
       cons: consArray,
+    };
+
+    try {
+      if (initialPost?.id) {
+        await fetch(`/api/posts/${encodeURIComponent(initialPost.id)}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await fetch("/api/posts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      }
+    } catch (err) {
+      console.error("Failed to save post via API:", err);
+    }
+
+    // Keep dataStore cache in sync
+    dataStore.savePost({
+      id: initialPost?.id,
+      ...payload,
     });
 
     setSavedTime("Saved just now");

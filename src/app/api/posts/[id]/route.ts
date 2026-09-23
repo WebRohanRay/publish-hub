@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { dataStore } from "@/lib/dataStore";
-import { updatePostServer, deletePostServer } from "@/lib/supabaseServer";
+import { getPostByIdServer, updatePostServer, deletePostServer } from "@/lib/supabaseServer";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/auth";
 
 interface RouteParams {
@@ -10,7 +9,7 @@ interface RouteParams {
 
 export async function GET(request: Request, { params }: RouteParams) {
   const { id } = await params;
-  const post = dataStore.getPostById(id);
+  const post = await getPostByIdServer(id);
 
   if (!post) {
     return NextResponse.json({ error: "Post not found." }, { status: 404 });
