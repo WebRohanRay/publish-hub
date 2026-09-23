@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Download, X } from "lucide-react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -56,7 +55,9 @@ export function PwaInstallPrompt() {
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center text-amber-400">
-            <Download className="w-4 h-4" />
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
           </div>
           <div>
             <h4 className="text-xs font-bold text-white">Install NoxWire App</h4>
@@ -68,7 +69,9 @@ export function PwaInstallPrompt() {
           className="p-1 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition"
           aria-label="Dismiss app install"
         >
-          <X className="w-3.5 h-3.5" />
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
 

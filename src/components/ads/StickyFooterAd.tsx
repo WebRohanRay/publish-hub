@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { X, ExternalLink, ShieldCheck } from "lucide-react";
 
 interface StickyFooterAdProps {
   sponsorName?: string;
@@ -45,7 +44,9 @@ export function StickyFooterAd({
         {/* Left: Sponsor & Offer Hook */}
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <div className="hidden xs:flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0">
-            <ShieldCheck className="w-4 h-4" />
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
           </div>
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
@@ -71,14 +72,18 @@ export function StickyFooterAd({
             className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs rounded-xl shadow-md transition transform active:scale-95 whitespace-nowrap"
           >
             <span>{ctaText}</span>
-            <ExternalLink className="w-3.5 h-3.5" />
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
           </a>
           <button
             onClick={handleDismiss}
             aria-label="Close promotion"
             className="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-zinc-800 transition"
           >
-            <X className="w-4 h-4" />
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
       </div>

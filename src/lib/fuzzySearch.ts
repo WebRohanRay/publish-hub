@@ -2,18 +2,18 @@
 // NoxWire — High Performance Client-Side Fuzzy Search Engine
 // ==============================================================================
 
-import { BlogPost } from "@/data/seedData";
+import { Post } from "@/data/seedData";
 
 export interface SearchMatch {
-  post: BlogPost;
+  post: Post;
   score: number;
   matchedFields: string[];
 }
 
 /**
- * Searches an array of blog posts with scoring weighted by title, tags, focus keywords, and excerpt.
+ * Searches an array of blog posts with scoring weighted by title, category, and excerpt.
  */
-export function searchPosts(posts: BlogPost[], query: string): SearchMatch[] {
+export function searchPosts(posts: Post[], query: string): SearchMatch[] {
   if (!query || !query.trim()) {
     return posts.map((post) => ({ post, score: 1, matchedFields: [] }));
   }
@@ -22,7 +22,7 @@ export function searchPosts(posts: BlogPost[], query: string): SearchMatch[] {
     .toLowerCase()
     .trim()
     .split(/\s+/)
-    .filter((t) => t.length > 0);
+    .filter((t: string) => t.length > 0);
 
   const results: SearchMatch[] = [];
 
@@ -33,7 +33,6 @@ export function searchPosts(posts: BlogPost[], query: string): SearchMatch[] {
     const titleLower = post.title.toLowerCase();
     const excerptLower = (post.excerpt || "").toLowerCase();
     const categoryLower = (post.category || "").toLowerCase();
-    const tagsLower = (post.tags || []).map((t) => t.toLowerCase()).join(" ");
 
     for (const term of queryTerms) {
       // 1. Title exact/partial match (Highest weight: 15 points)
@@ -42,19 +41,13 @@ export function searchPosts(posts: BlogPost[], query: string): SearchMatch[] {
         if (!matchedFields.includes("title")) matchedFields.push("title");
       }
 
-      // 2. Tags exact/partial match (High weight: 10 points)
-      if (tagsLower.includes(term)) {
-        score += 10;
-        if (!matchedFields.includes("tags")) matchedFields.push("tags");
-      }
-
-      // 3. Category match (Medium weight: 8 points)
+      // 2. Category match (Medium weight: 8 points)
       if (categoryLower.includes(term)) {
         score += 8;
         if (!matchedFields.includes("category")) matchedFields.push("category");
       }
 
-      // 4. Excerpt match (Weight: 4 points)
+      // 3. Excerpt match (Weight: 4 points)
       if (excerptLower.includes(term)) {
         score += 4;
         if (!matchedFields.includes("excerpt")) matchedFields.push("excerpt");

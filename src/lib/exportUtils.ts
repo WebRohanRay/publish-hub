@@ -2,19 +2,19 @@
 // NoxWire — Content Syndication & Backup Export Engine
 // ==============================================================================
 
-import { BlogPost } from "@/data/seedData";
+import { Post } from "@/data/seedData";
 
 export interface ExportPayload {
   version: string;
   exportedAt: string;
   totalPosts: number;
-  posts: BlogPost[];
+  posts: Post[];
 }
 
 /**
  * Serializes blog posts into a formatted JSON backup package.
  */
-export function exportPostsToJson(posts: BlogPost[]): string {
+export function exportPostsToJson(posts: Post[]): string {
   const payload: ExportPayload = {
     version: "1.1.0",
     exportedAt: new Date().toISOString(),
@@ -27,7 +27,7 @@ export function exportPostsToJson(posts: BlogPost[]): string {
 /**
  * Serializes a single post into frontmatter + markdown format.
  */
-export function exportPostToMarkdown(post: BlogPost): string {
+export function exportPostToMarkdown(post: Post): string {
   const frontmatter = [
     "---",
     `title: "${post.title.replace(/"/g, '\\"')}"`,
@@ -35,10 +35,9 @@ export function exportPostToMarkdown(post: BlogPost): string {
     `category: "${post.category}"`,
     `publishedAt: "${post.publishedAt}"`,
     `readingTime: "${post.readingTime}"`,
-    `featuredImage: "${post.featuredImage}"`,
+    `featuredImage: "${post.image}"`,
     `rating: ${post.rating || "null"}`,
     `badge: "${post.badge || ""}"`,
-    `tags: [${(post.tags || []).map((t) => `"${t}"`).join(", ")}]`,
     "---",
     "",
   ].join("\n");
