@@ -1,0 +1,11 @@
+/* TEAM */
+  Publisher & Editor: Rohan Ray
+  Email: webrohanray@gmail.com / editor@noxwire.io
+  Location: Global / Remote
+
+/* SITE */
+  Standards: HTML5, CSS3, ESNext, Next.js 16, React 19, TypeScript
+  Database: Supabase PostgreSQL (pgvector, RLS, Storage)
+  Styling: Tailwind CSS v4
+  Language: Multilingual (EN, ES, DE, FR)
+  Target: Fast, accessible, privacy-first editorial journalism
