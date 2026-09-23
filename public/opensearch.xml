@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>NoxWire</ShortName>
+  <Description>Search NoxWire articles, reviews, and benchmarks</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">https://publish-hub.vercel.app/favicon.ico</Image>
+  <Url type="text/html" template="https://publish-hub.vercel.app/blog?q={searchTerms}" />
+  <Contact>editor@noxwire.io</Contact>
+  <Tags>dating igaming adult-tech benchmarks</Tags>
+</OpenSearchDescription>
