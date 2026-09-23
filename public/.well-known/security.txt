@@ -1,0 +1,9 @@
+# NoxWire Security & Vulnerability Disclosure Policy
+# Reference: RFC 9116
+
+Contact: mailto:security@noxwire.io
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: en, es, de, fr
+Canonical: https://publish-hub.vercel.app/.well-known/security.txt
+Policy: https://publish-hub.vercel.app/privacy
+Acknowledgments: https://publish-hub.vercel.app/about
