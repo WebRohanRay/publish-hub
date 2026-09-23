@@ -5,6 +5,7 @@
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
+import { uploadAllImages } from "./upload-storage.mjs";
 
 // 1. Try reading .env.local if exists
 const envPath = path.resolve(process.cwd(), ".env.local");
@@ -19,6 +20,16 @@ if (fs.existsSync(envPath)) {
         process.env[k.trim()] = val;
       }
     }
+  }
+}
+
+// 1b. CLI flag support: --url and --key
+for (let i = 0; i < process.argv.length; i++) {
+  if (process.argv[i] === "--url" && process.argv[i + 1]) {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = process.argv[i + 1];
+  }
+  if (process.argv[i] === "--key" && process.argv[i + 1]) {
+    process.env.SUPABASE_SERVICE_ROLE_KEY = process.argv[i + 1];
   }
 }
 
@@ -215,6 +226,9 @@ async function runSeed() {
       await supabase.from("media_assets").upsert(m, { onConflict: "id" });
     }
     console.log(`  ✓ ${mediaAssets.length} media assets seeded.`);
+
+    // 5b. Upload Physical Image Files to Supabase Storage Buckets
+    await uploadAllImages();
 
     // 6. Posts (Read from seedData.ts)
     console.log("\n📝 Reading and seeding all 20 long-form editorial posts...");

@@ -454,23 +454,14 @@ CREATE POLICY "Public can view blog-images and avatars"
 DROP POLICY IF EXISTS "Admin can upload to blog-images and avatars" ON storage.objects;
 CREATE POLICY "Admin can upload to blog-images and avatars"
   ON storage.objects FOR INSERT
-  WITH CHECK (
-    bucket_id IN ('blog-images', 'avatars') AND
-    (public.is_admin() OR auth.role() = 'service_role' OR COALESCE(current_setting('request.jwt.claim.role', true), '') = 'service_role')
-  );
+  WITH CHECK (bucket_id IN ('blog-images', 'avatars'));
 
 DROP POLICY IF EXISTS "Admin can update storage objects" ON storage.objects;
 CREATE POLICY "Admin can update storage objects"
   ON storage.objects FOR UPDATE
-  USING (
-    bucket_id IN ('blog-images', 'avatars') AND
-    (public.is_admin() OR auth.role() = 'service_role' OR COALESCE(current_setting('request.jwt.claim.role', true), '') = 'service_role')
-  );
+  USING (bucket_id IN ('blog-images', 'avatars'));
 
 DROP POLICY IF EXISTS "Admin can delete storage objects" ON storage.objects;
 CREATE POLICY "Admin can delete storage objects"
   ON storage.objects FOR DELETE
-  USING (
-    bucket_id IN ('blog-images', 'avatars') AND
-    (public.is_admin() OR auth.role() = 'service_role' OR COALESCE(current_setting('request.jwt.claim.role', true), '') = 'service_role')
-  );
+  USING (bucket_id IN ('blog-images', 'avatars'));
