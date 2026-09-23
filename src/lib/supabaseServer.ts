@@ -42,7 +42,7 @@ function mapPostFromDb(row: any): Post {
     pros: Array.isArray(row.pros) ? row.pros : [],
     cons: Array.isArray(row.cons) ? row.cons : [],
     author: {
-      name: row.profiles?.display_name || "Maya Patel",
+      name: row.profiles?.display_name || "Editorial Staff",
       avatar: row.profiles?.avatar_url || "/avatars/avatar_maya_patel.jpg",
       role: "Lead Systems Auditor",
     },
@@ -767,6 +767,78 @@ export async function updateSiteSettingsServer(settings: any) {
       default_meta_title: settings.defaultMetaTitle,
       updated_at: new Date().toISOString(),
     });
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+// ----------------------------------------------------------------------------
+// ADMIN PROFILES API (Dynamic from Supabase)
+// ----------------------------------------------------------------------------
+export async function getAdminProfileServer(userIdOrEmail?: string) {
+  const defaultProfile = {
+    id: "admin-default",
+    displayName: process.env.ADMIN_NAME || "Administrator",
+    avatarUrl: "/avatars/avatar_maya_patel.jpg",
+    isAdmin: true,
+  };
+
+  if (!isSupabaseConfigured()) {
+    return defaultProfile;
+  }
+
+  try {
+    let query = supabaseServer
+      .from("profiles")
+      .select("id, display_name, avatar_url, is_admin, updated_at");
+
+    if (userIdOrEmail && userIdOrEmail.includes("-")) {
+      query = query.eq("id", userIdOrEmail);
+    } else {
+      query = query.eq("is_admin", true).order("updated_at", { ascending: false });
+    }
+
+    const { data, error } = await query.limit(1).maybeSingle();
+    if (error || !data) {
+      return defaultProfile;
+    }
+
+    return {
+      id: data.id,
+      displayName: data.display_name || "Administrator",
+      avatarUrl: data.avatar_url || "/avatars/avatar_maya_patel.jpg",
+      isAdmin: Boolean(data.is_admin),
+    };
+  } catch {
+    return defaultProfile;
+  }
+}
+
+export async function updateAdminProfileServer(profileData: {
+  id?: string;
+  displayName: string;
+  avatarUrl?: string;
+}) {
+  if (!isSupabaseConfigured()) return true;
+
+  try {
+    const updatePayload: any = {
+      display_name: profileData.displayName,
+      updated_at: new Date().toISOString(),
+    };
+    if (profileData.avatarUrl) {
+      updatePayload.avatar_url = profileData.avatarUrl;
+    }
+
+    let query = supabaseServer.from("profiles").update(updatePayload);
+    if (profileData.id && profileData.id !== "admin-default") {
+      query = query.eq("id", profileData.id);
+    } else {
+      query = query.eq("is_admin", true);
+    }
+
+    const { error } = await query;
     return !error;
   } catch {
     return false;

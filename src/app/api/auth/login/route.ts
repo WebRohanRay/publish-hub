@@ -7,6 +7,7 @@ import {
   COOKIE_NAME,
 } from "@/lib/auth";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 export async function POST(request: Request) {
   try {
@@ -25,10 +26,11 @@ export async function POST(request: Request) {
     const validEmails = [expectedEmail, ...ADMIN_EMAIL_ALIASES.map((e) => e.toLowerCase())];
 
     let isAuthenticated = false;
-    let userName = normalizedEmail.includes("rohan") ? "Rohan Ray" : "Maya Patel";
+    let userName = "Administrator";
+    let userAvatar = "/avatars/avatar_maya_patel.jpg";
     let userRole = "administrator";
 
-    // 1. Check Supabase Auth if configured
+    // 1. Check Supabase Auth if configured (online database is source of truth)
     if (isSupabaseConfigured()) {
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
@@ -37,21 +39,38 @@ export async function POST(request: Request) {
         });
 
         if (!error && data?.user) {
-          isAuthenticated = true;
-          userName = data.user.user_metadata?.display_name || data.user.email?.split("@")[0] || "Maya Patel";
+          const { data: profile } = await supabaseServer
+            .from("profiles")
+            .select("display_name, avatar_url, is_admin")
+            .eq("id", data.user.id)
+            .maybeSingle();
+
+          if (profile && profile.is_admin) {
+            isAuthenticated = true;
+            userName = profile.display_name || data.user.email?.split("@")[0] || "Administrator";
+            userAvatar = profile.avatar_url || userAvatar;
+            userRole = "Super Admin";
+          } else {
+            return NextResponse.json(
+              { error: "Access denied. Your account is not designated as an administrator in the Supabase profiles database." },
+              { status: 403 }
+            );
+          }
         }
-      } catch {
-        // Fallback to credentials check
+      } catch (err) {
+        console.warn("Supabase auth sign-in error:", err);
       }
     }
 
-    // 2. Check against configured admin credentials / fallback
-    if (!isAuthenticated) {
+    // 2. Check against environment admin credentials if Supabase not configured or in offline setup
+    if (!isAuthenticated && !isSupabaseConfigured()) {
+      const validEmails = [expectedEmail, ...ADMIN_EMAIL_ALIASES.map((e) => e.toLowerCase())];
       if (
         validEmails.includes(normalizedEmail) &&
         password === ADMIN_DEFAULT_PASSWORD
       ) {
         isAuthenticated = true;
+        userName = process.env.ADMIN_NAME || "Administrator";
       }
     }
 
@@ -71,6 +90,7 @@ export async function POST(request: Request) {
       user: {
         email: normalizedEmail,
         name: userName,
+        avatar: userAvatar,
         role: userRole,
       },
     });

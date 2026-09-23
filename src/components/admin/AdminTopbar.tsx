@@ -15,6 +15,22 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({
   onOpenMobileSidebar,
 }) => {
   const router = useRouter();
+  const [adminUser, setAdminUser] = React.useState<{ name: string; avatar: string; role: string } | null>(null);
+
+  React.useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setAdminUser({
+            name: data.user.name || "Administrator",
+            avatar: data.user.avatar || "/avatars/avatar_maya_patel.jpg",
+            role: data.user.role || "Super Admin",
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -41,7 +57,7 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({
         )}
 
         <div className="text-xs font-semibold text-muted-text flex items-center gap-2">
-          <span>Atlas Editorial</span>
+          <span>NoxWire Editorial</span>
           <span>›</span>
           <span className="text-ink font-bold">{breadcrumb}</span>
         </div>
@@ -76,14 +92,18 @@ export const AdminTopbar: React.FC<AdminTopbarProps> = ({
         </button>
 
         {/* Admin Avatar */}
-        <div className="relative h-8 w-8 rounded-full overflow-hidden border border-border bg-orange-soft flex items-center justify-center font-bold text-xs text-ink shadow-xs">
+        <Link
+          href="/admin/settings"
+          className="relative h-8 w-8 rounded-full overflow-hidden border border-border bg-orange-soft flex items-center justify-center font-bold text-xs text-ink shadow-xs hover:border-orange transition"
+          title={`Admin Profile: ${adminUser?.name || "Administrator"}`}
+        >
           <Image
-            src="/avatars/avatar_maya_patel.jpg"
-            alt="Admin Avatar"
+            src={adminUser?.avatar || "/avatars/avatar_maya_patel.jpg"}
+            alt={adminUser?.name || "Admin Avatar"}
             fill
             className="object-cover"
           />
-        </div>
+        </Link>
       </div>
     </header>
   );

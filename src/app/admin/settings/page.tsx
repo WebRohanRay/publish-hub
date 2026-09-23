@@ -9,14 +9,24 @@ export default function AdminSettingsPage() {
   const [requireModeration, setRequireModeration] = useState(true);
   const [guestComments, setGuestComments] = useState(true);
   const [defaultMetaTitle, setDefaultMetaTitle] = useState("NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech");
+  
+  // Administrator Profile from Supabase public.profiles
+  const [adminDisplayName, setAdminDisplayName] = useState("Rohan Ray");
+  const [adminAvatarUrl, setAdminAvatarUrl] = useState("/avatars/avatar_maya_patel.jpg");
+  const [adminProfileId, setAdminProfileId] = useState<string | undefined>(undefined);
+  
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadSettings() {
       try {
-        const res = await fetch("/api/admin/settings");
-        if (res.ok) {
-          const data = await res.json();
+        const [settingsRes, profileRes] = await Promise.all([
+          fetch("/api/admin/settings"),
+          fetch("/api/admin/profile"),
+        ]);
+
+        if (settingsRes.ok) {
+          const data = await settingsRes.json();
           if (data.settings) {
             setSiteName(data.settings.siteName || "NoxWire");
             setContactEmail(data.settings.contactEmail || "editor@noxwire.io");
@@ -24,6 +34,15 @@ export default function AdminSettingsPage() {
             setRequireModeration(data.settings.commentsRequireModeration ?? true);
             setGuestComments(data.settings.allowGuestComments ?? true);
             setDefaultMetaTitle(data.settings.defaultMetaTitle || "NoxWire — The Unfiltered Journal of Dating, iGaming & Adult Tech");
+          }
+        }
+
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          if (profileData.profile) {
+            setAdminDisplayName(profileData.profile.displayName || "Rohan Ray");
+            setAdminAvatarUrl(profileData.profile.avatarUrl || "/avatars/avatar_maya_patel.jpg");
+            setAdminProfileId(profileData.profile.id);
           }
         }
       } catch (err) {
@@ -36,25 +55,39 @@ export default function AdminSettingsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/admin/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          siteName,
-          contactEmail,
-          commentsEnabled,
-          commentsRequireModeration: requireModeration,
-          allowGuestComments: guestComments,
-          defaultMetaTitle,
+      const [settingsRes, profileRes] = await Promise.all([
+        fetch("/api/admin/settings", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            siteName,
+            contactEmail,
+            commentsEnabled,
+            commentsRequireModeration: requireModeration,
+            allowGuestComments: guestComments,
+            defaultMetaTitle,
+          }),
         }),
-      });
+        fetch("/api/admin/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: adminProfileId,
+            displayName: adminDisplayName,
+            avatarUrl: adminAvatarUrl,
+          }),
+        }),
+      ]);
 
-      if (res.ok) {
-        setToast("Settings successfully saved to Supabase.");
+      if (settingsRes.ok && profileRes.ok) {
+        setToast("Settings and Administrator Profile saved to Supabase.");
+        setTimeout(() => setToast(null), 3000);
+      } else {
+        setToast("Saved to Supabase with partial notices.");
         setTimeout(() => setToast(null), 3000);
       }
     } catch {
-      setToast("Failed to save settings.");
+      setToast("Failed to save settings to Supabase.");
     }
   };
 
@@ -79,6 +112,46 @@ export default function AdminSettingsPage() {
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
+        {/* Administrator Profile Card (Supabase public.profiles) */}
+        <div className="rounded-2xl border border-border bg-card p-6 shadow-soft space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-3">
+            <div>
+              <h3 className="font-serif text-lg text-ink font-semibold">
+                Administrator Profile
+              </h3>
+              <p className="text-xs text-muted-text mt-0.5">
+                Dynamic author identity stored in Supabase <code className="text-orange font-mono">public.profiles</code>.
+              </p>
+            </div>
+            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+              Supabase Connected
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-ink mb-1">Display Name</label>
+              <input
+                type="text"
+                value={adminDisplayName}
+                onChange={(e) => setAdminDisplayName(e.target.value)}
+                placeholder="e.g. Rohan Ray"
+                className="w-full rounded-xl bg-paper px-3.5 py-2 text-xs border border-border text-ink"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-ink mb-1">Avatar Image URL</label>
+              <input
+                type="text"
+                value={adminAvatarUrl}
+                onChange={(e) => setAdminAvatarUrl(e.target.value)}
+                placeholder="/avatars/avatar_maya_patel.jpg or Supabase Storage URL"
+                className="w-full rounded-xl bg-paper px-3.5 py-2 text-xs border border-border text-ink"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* General Settings */}
         <div className="rounded-2xl border border-border bg-card p-6 shadow-soft space-y-4">
           <h3 className="font-serif text-lg text-ink font-semibold border-b border-border pb-3">

@@ -13,6 +13,22 @@ interface AdminSidebarProps {
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const [adminUser, setAdminUser] = React.useState<{ name: string; avatar: string; role: string } | null>(null);
+
+  React.useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.authenticated && data.user) {
+          setAdminUser({
+            name: data.user.name || "Administrator",
+            avatar: data.user.avatar || "/avatars/avatar_maya_patel.jpg",
+            role: data.user.role || "Super Admin",
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -123,20 +139,22 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ onCloseMobile }) => 
 
       {/* Profile & Logout Row */}
       <div className="p-4 border-t border-navy-soft flex items-center justify-between bg-navy">
-        <div className="flex items-center gap-2.5">
+        <Link href="/admin/settings" className="flex items-center gap-2.5 hover:opacity-85 transition group">
           <div className="relative h-8 w-8 rounded-full overflow-hidden border border-orange/40 bg-navy-soft">
             <Image
-              src="/avatars/avatar_maya_patel.jpg"
-              alt="Maya Patel"
+              src={adminUser?.avatar || "/avatars/avatar_maya_patel.jpg"}
+              alt={adminUser?.name || "Administrator"}
               fill
               className="object-cover"
             />
           </div>
           <div>
-            <div className="text-xs font-semibold text-white">Maya Patel</div>
-            <div className="text-[10px] text-orange">Super Admin</div>
+            <div className="text-xs font-semibold text-white group-hover:text-orange transition truncate max-w-[110px]">
+              {adminUser?.name || "Administrator"}
+            </div>
+            <div className="text-[10px] text-orange">{adminUser?.role || "Super Admin"}</div>
           </div>
-        </div>
+        </Link>
 
         <button
           onClick={handleLogout}
