@@ -113,20 +113,20 @@ Conversations die because both sides default to low-effort agreeable pleasantrie
 
 ### How can I tell if a profile is an AI bot before meeting?
 Modern bot syndicates use generative AI portraits. Zoom into the background: check for mismatched earrings, warped architectural lines, and inconsistent reflections in the eyes. Always insist on a quick in-app video call or review our safety checklist on [spotting fake profiles and AI romance scams](/blog/spot-fake-profiles-bots-dating-apps-guide).',
-  '/art/dating_comparison_guide.jpg',
+  '/art/dating_comparison_2026.jpg',
   'c1000000-0000-0000-0000-000000000001',
   'published',
-  '2026-09-20 12:00:00+00',
-  12,
-  42890,
-  1842,
-  4.8,
-  'Editor''s Top Pick',
+  '2026-09-23 12:00:00+00',
+  14,
+  45120,
+  2180,
+  4.9,
+  'Audited Benchmark',
   'Free 7-Day Trial + Boosted Profile Visibility',
   '#dating-offer',
-  'Best Dating Apps of 2026: The Definitive Free vs. VIP Breakdown | NoxWire',
-  'We spent 60 days, created 24 controlled test profiles, and tracked thousands of swipes to uncover what actually changes when you pay $40 a month.',
-  'best dating apps free vs paid breakdown'
+  'Best Dating Apps (2026): Free vs. VIP Paid Breakdown | NoxWire',
+  'We spent $1,200 testing 18 dating apps. Discover real match rate data, algorithmic Elo secrets, and whether Tinder Platinum or HingeX is worth the money.',
+  'best dating apps free vs paid'
 ) ON CONFLICT (slug) DO UPDATE SET
   title = EXCLUDED.title,
   excerpt = EXCLUDED.excerpt,
