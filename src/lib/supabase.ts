@@ -11,8 +11,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 });
 
 export const isSupabaseConfigured = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   return (
-    process.env.NEXT_PUBLIC_SUPABASE_URL !== undefined &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY !== undefined
+    typeof url === "string" &&
+    url.trim().length > 0 &&
+    !url.includes("placeholder-publish-hub") &&
+    typeof key === "string" &&
+    key.trim().length > 0 &&
+    !key.includes("placeholder-anon-key")
   );
 };

@@ -4,21 +4,25 @@ import { notFound } from "next/navigation";
 import { PublicHeader } from "@/components/public/PublicHeader";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { CategoryArchiveView } from "@/components/public/CategoryArchiveView";
-import { INITIAL_CATEGORIES, INITIAL_POSTS } from "@/data/seedData";
+import { getCategoriesServer, getPostsServer } from "@/lib/supabaseServer";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
-  return INITIAL_CATEGORIES.map((category) => ({
+  const categories = await getCategoriesServer();
+  return categories.map((category) => ({
     slug: category.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const category = INITIAL_CATEGORIES.find((c) => c.slug === slug);
+  const categories = await getCategoriesServer();
+  const category = categories.find((c) => c.slug === slug);
 
   if (!category) {
     return {
@@ -61,16 +65,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function CategoryArchivePage({ params }: PageProps) {
   const { slug } = await params;
-  const currentCategory =
-    INITIAL_CATEGORIES.find((c) => c.slug === slug) || INITIAL_CATEGORIES[0];
+  const categories = await getCategoriesServer();
+  const currentCategory = categories.find((c) => c.slug === slug);
 
   if (!currentCategory) {
     notFound();
   }
 
-  const categoryPosts = INITIAL_POSTS.filter(
-    (post) => post.categorySlug === currentCategory.slug && post.status === "published"
-  );
+  const categoryPosts = await getPostsServer({ category: currentCategory.slug, status: "published" });
 
   const collectionSchema = {
     "@context": "https://schema.org",
@@ -126,7 +128,7 @@ export default async function CategoryArchivePage({ params }: PageProps) {
 
       <CategoryArchiveView
         category={currentCategory}
-        allCategories={INITIAL_CATEGORIES}
+        allCategories={categories}
         posts={categoryPosts}
       />
 

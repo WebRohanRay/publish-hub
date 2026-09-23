@@ -7,7 +7,7 @@ import { PublicFooter } from "@/components/public/PublicFooter";
 import { StoryCard } from "@/components/public/StoryCard";
 import { TopicRibbon } from "@/components/public/TopicRibbon";
 import { AdsterraBanner } from "@/components/ads/AdsterraMonetization";
-import { INITIAL_CATEGORIES, INITIAL_POSTS, Post } from "@/data/seedData";
+import { Post, Category } from "@/data/seedData";
 import { dataStore } from "@/lib/dataStore";
 import { useI18n } from "@/lib/i18n";
 
@@ -17,32 +17,41 @@ function BlogArchiveContent() {
   const initialQuery = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || "all";
 
-  const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState<"latest" | "popular" | "comments">("latest");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchPosts() {
+    async function fetchData() {
       try {
-        const res = await fetch("/api/posts");
-        if (res.ok) {
-          const data = await res.json();
+        const [postsRes, catsRes] = await Promise.all([
+          fetch("/api/posts"),
+          fetch("/api/categories"),
+        ]);
+
+        if (postsRes.ok) {
+          const data = await postsRes.json();
           const list = Array.isArray(data) ? data : Array.isArray(data?.posts) ? data.posts : [];
-          if (list.length > 0 || dataStore.isDemoCleared()) {
-            const published = list.filter((p: Post) => p.status === "published");
-            setPosts(published);
-          }
+          const published = list.filter((p: Post) => p.status === "published");
+          setPosts(published);
+        }
+
+        if (catsRes.ok) {
+          const data = await catsRes.json();
+          const catList = Array.isArray(data) ? data : Array.isArray(data?.categories) ? data.categories : [];
+          setCategories(catList);
         }
       } catch (err) {
-        console.error("Failed to load posts:", err);
+        console.error("Failed to load blog data:", err);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchPosts();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -124,7 +133,7 @@ function BlogArchiveContent() {
 
         {/* Topic Ribbon */}
         <TopicRibbon
-          categories={INITIAL_CATEGORIES}
+          categories={categories}
           activeCategory={selectedCategory === "all" ? undefined : selectedCategory}
         />
 

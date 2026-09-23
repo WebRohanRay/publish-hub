@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
-import { INITIAL_POSTS, INITIAL_CATEGORIES } from "@/data/seedData";
+import { getCategoriesServer, getPostsServer } from "@/lib/supabaseServer";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://publish-hub.vercel.app";
   const now = new Date();
 
@@ -61,8 +61,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const categories = await getCategoriesServer();
+  const posts = await getPostsServer({ status: "published" });
+
   // Editorial category routes
-  const categoryRoutes: MetadataRoute.Sitemap = INITIAL_CATEGORIES.map((cat) => ({
+  const categoryRoutes: MetadataRoute.Sitemap = categories.map((cat) => ({
     url: `${baseUrl}/category/${cat.slug}`,
     lastModified: now,
     changeFrequency: "weekly",
@@ -71,7 +74,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Published article routes
-  const postRoutes: MetadataRoute.Sitemap = INITIAL_POSTS.filter((p) => p.status === "published").map((post) => ({
+  const postRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: now,
     changeFrequency: "weekly",

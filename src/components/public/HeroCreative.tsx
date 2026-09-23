@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Post, INITIAL_POSTS } from "@/data/seedData";
+import { Post } from "@/data/seedData";
 import { useI18n } from "@/lib/i18n";
 
 interface HeroCreativeProps {
@@ -12,7 +12,7 @@ interface HeroCreativeProps {
 }
 
 export const HeroCreative: React.FC<HeroCreativeProps> = ({
-  initialPosts = INITIAL_POSTS,
+  initialPosts = [],
 }) => {
   const router = useRouter();
   const { t } = useI18n();

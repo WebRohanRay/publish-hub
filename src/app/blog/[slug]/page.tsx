@@ -5,21 +5,24 @@ import { PublicHeader } from "@/components/public/PublicHeader";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { ArticleJsonLd } from "@/components/seo/ArticleJsonLd";
 import { ArticleInteractiveView } from "@/components/blog/ArticleInteractiveView";
-import { INITIAL_POSTS } from "@/data/seedData";
+import { getPostBySlugServer, getPostsServer } from "@/lib/supabaseServer";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
-  return INITIAL_POSTS.map((post) => ({
+  const posts = await getPostsServer();
+  return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = INITIAL_POSTS.find((p) => p.slug === slug);
+  const post = await getPostBySlugServer(slug);
 
   if (!post) {
     return {
@@ -88,13 +91,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const post = INITIAL_POSTS.find((p) => p.slug === slug) || INITIAL_POSTS[0];
+  const post = await getPostBySlugServer(slug);
 
   if (!post) {
     notFound();
   }
 
-  const relatedPosts = INITIAL_POSTS.filter((p) => p.id !== post.id && p.status === "published").slice(0, 2);
+  const allPosts = await getPostsServer({ status: "published" });
+  const relatedPosts = allPosts.filter((p) => p.id !== post.id).slice(0, 2);
   const canonicalUrl = `https://publish-hub.vercel.app/blog/${post.slug}`;
 
   return (

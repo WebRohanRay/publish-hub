@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { INITIAL_POSTS } from "@/data/seedData";
+import { getPostsServer } from "@/lib/supabaseServer";
 
 export async function GET() {
   const baseUrl = "https://publish-hub.vercel.app";
   const updatedDate = new Date().toISOString();
+  const posts = await getPostsServer({ status: "published" });
 
-  const entries = INITIAL_POSTS.map(
+  const entries = posts.map(
     (post) => `
   <entry>
     <title type="html"><![CDATA[${post.title}]]></title>
