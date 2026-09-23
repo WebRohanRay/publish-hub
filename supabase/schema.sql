@@ -221,6 +221,21 @@ CREATE TABLE IF NOT EXISTS public.activity_logs (
 );
 
 -- ==============================================================================
+-- 12. MEDIA ASSETS
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.media_assets (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  filename TEXT NOT NULL,
+  public_url TEXT NOT NULL,
+  file_size_bytes BIGINT DEFAULT 500000,
+  width INTEGER DEFAULT 1920,
+  height INTEGER DEFAULT 1080,
+  mime_type TEXT DEFAULT 'image/jpeg',
+  alt_text TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+-- ==============================================================================
 -- AUTO-UPDATE TIMESTAMPS TRIGGER
 -- ==============================================================================
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
@@ -270,6 +285,7 @@ ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.view_events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.media_assets ENABLE ROW LEVEL SECURITY;
 
 -- Helper admin check function (Supports both Service Role & Admin profiles)
 CREATE OR REPLACE FUNCTION public.is_admin()
@@ -401,6 +417,12 @@ CREATE POLICY "Admin has full access to newsletter_subscribers" ON public.newsle
 
 DROP POLICY IF EXISTS "Admin has full access to activity_logs" ON public.activity_logs;
 CREATE POLICY "Admin has full access to activity_logs" ON public.activity_logs FOR ALL USING (public.is_admin());
+
+DROP POLICY IF EXISTS "Public can view media assets" ON public.media_assets;
+CREATE POLICY "Public can view media assets" ON public.media_assets FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admin has full access to media_assets" ON public.media_assets;
+CREATE POLICY "Admin has full access to media_assets" ON public.media_assets FOR ALL USING (public.is_admin());
 
 -- ==============================================================================
 -- 4. SEED DEFAULT SETTINGS

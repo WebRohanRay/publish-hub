@@ -165,6 +165,34 @@ INSERT INTO public.comments (id, post_id, author_name, author_email, body, statu
     '2026-09-21 09:10:00+00'
   )
 ON CONFLICT (id) DO NOTHING;
+
+-- 6. Media Assets Seed
+INSERT INTO public.media_assets (id, filename, public_url, file_size_bytes, width, height, mime_type, alt_text) VALUES
+  ('a1000000-0000-0000-0000-000000000001', 'dating_comparison_2026.jpg', '/art/dating_comparison_2026.jpg', 760491, 1920, 1080, 'image/jpeg', 'Comparison of free versus VIP dating app subscriptions on smartphone screens'),
+  ('a2000000-0000-0000-0000-000000000002', 'dating_algorithm_funnel.jpg', '/art/dating_algorithm_funnel.jpg', 805603, 1920, 1080, 'image/jpeg', 'Algorithmic matchmaking funnel diagram showing card distribution'),
+  ('a3000000-0000-0000-0000-000000000003', 'dating_subscriptions_worth_it.jpg', '/art/dating_subscriptions_worth_it.jpg', 696315, 1920, 1080, 'image/jpeg', 'Editorial photo of smartphone VIP checkout and receipt on mahogany desk'),
+  ('a4000000-0000-0000-0000-000000000004', 'dating_comparison_guide.jpg', '/art/dating_comparison_guide.jpg', 742740, 1920, 1080, 'image/jpeg', 'Online dating apps and matchmaking guide editorial hero'),
+  ('a5000000-0000-0000-0000-000000000005', 'casino_betting_hero.jpg', '/art/casino_betting_hero.jpg', 829235, 1920, 1080, 'image/jpeg', 'Regulated online sportsbook and casino interface'),
+  ('a6000000-0000-0000-0000-000000000006', 'crypto_casino_payout.jpg', '/art/crypto_casino_payout.jpg', 865232, 1920, 1080, 'image/jpeg', 'Crypto wallet payout speed test on Solana and Bitcoin'),
+  ('a7000000-0000-0000-0000-000000000007', 'adult_lifestyle_hero.jpg', '/art/adult_lifestyle_hero.jpg', 813277, 1920, 1080, 'image/jpeg', 'Creator economy and independent content platform comparison'),
+  ('a8000000-0000-0000-0000-000000000008', 'discreet_billing_cards.jpg', '/art/discreet_billing_cards.jpg', 703124, 1920, 1080, 'image/jpeg', 'Virtual credit cards and discreet bank statement descriptors'),
+  ('a9000000-0000-0000-0000-000000000009', 'crypto_privacy_hero.jpg', '/art/crypto_privacy_hero.jpg', 959404, 1920, 1080, 'image/jpeg', 'Digital privacy stack, VPN encryption, and metadata protection')
+ON CONFLICT (id) DO NOTHING;
+
+-- 7. Post Tags Association
+INSERT INTO public.post_tags (post_id, tag_id) VALUES
+  ('p0000000-0000-0000-0000-000000000001', 't1000000-0000-0000-0000-000000000001'),
+  ('p0000000-0000-0000-0000-000000000001', 't2000000-0000-0000-0000-000000000002'),
+  ('p0000000-0000-0000-0000-000000000002', 't1000000-0000-0000-0000-000000000001'),
+  ('p0000000-0000-0000-0000-000000000002', 't8000000-0000-0000-0000-000000000008'),
+  ('p0000000-0000-0000-0000-000000000003', 't1000000-0000-0000-0000-000000000001'),
+  ('p0000000-0000-0000-0000-000000000003', 't9000000-0000-0000-0000-000000000009'),
+  ('p0000000-0000-0000-0000-000000000006', 't3000000-0000-0000-0000-000000000003'),
+  ('p0000000-0000-0000-0000-000000000007', 't4000000-0000-0000-0000-000000000004'),
+  ('p0000000-0000-0000-0000-000000000011', 't6000000-0000-0000-0000-000000000006'),
+  ('p0000000-0000-0000-0000-000000000012', 't8000000-0000-0000-0000-000000000008'),
+  ('p0000000-0000-0000-0000-000000000016', 't9000000-0000-0000-0000-000000000009')
+ON CONFLICT (post_id, tag_id) DO NOTHING;
 `;
 
 const seedSqlPath = path.resolve(process.cwd(), "supabase", "seed.sql");

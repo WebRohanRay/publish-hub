@@ -198,12 +198,143 @@ async function runSeed() {
     }
     console.log(`  ✓ ${tags.length} SEO tags seeded.`);
 
-    // 5. Read and seed posts from seed.sql or directly
-    console.log("\n📝 Reading and seeding all 20 long-form editorial posts from supabase/seed.sql...");
-    const seedSqlPath = path.resolve(process.cwd(), "supabase", "seed.sql");
-    if (fs.existsSync(seedSqlPath)) {
-      console.log(`  ✓ supabase/seed.sql located (${(fs.statSync(seedSqlPath).size / 1024).toFixed(1)} KB)`);
+    // 5. Media Assets
+    console.log("\n🖼️ Upserting High-Resolution Media Assets...");
+    const mediaAssets = [
+      { id: "a1000000-0000-0000-0000-000000000001", filename: "dating_comparison_2026.jpg", public_url: "/art/dating_comparison_2026.jpg", file_size_bytes: 760491, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Comparison of free versus VIP dating app subscriptions on smartphone screens" },
+      { id: "a2000000-0000-0000-0000-000000000002", filename: "dating_algorithm_funnel.jpg", public_url: "/art/dating_algorithm_funnel.jpg", file_size_bytes: 805603, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Algorithmic matchmaking funnel diagram showing card distribution" },
+      { id: "a3000000-0000-0000-0000-000000000003", filename: "dating_subscriptions_worth_it.jpg", public_url: "/art/dating_subscriptions_worth_it.jpg", file_size_bytes: 696315, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Editorial photo of smartphone VIP checkout and receipt on mahogany desk" },
+      { id: "a4000000-0000-0000-0000-000000000004", filename: "dating_comparison_guide.jpg", public_url: "/art/dating_comparison_guide.jpg", file_size_bytes: 742740, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Online dating apps and matchmaking guide editorial hero" },
+      { id: "a5000000-0000-0000-0000-000000000005", filename: "casino_betting_hero.jpg", public_url: "/art/casino_betting_hero.jpg", file_size_bytes: 829235, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Regulated online sportsbook and casino interface" },
+      { id: "a6000000-0000-0000-0000-000000000006", filename: "crypto_casino_payout.jpg", public_url: "/art/crypto_casino_payout.jpg", file_size_bytes: 865232, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Crypto wallet payout speed test on Solana and Bitcoin" },
+      { id: "a7000000-0000-0000-0000-000000000007", filename: "adult_lifestyle_hero.jpg", public_url: "/art/adult_lifestyle_hero.jpg", file_size_bytes: 813277, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Creator economy and independent content platform comparison" },
+      { id: "a8000000-0000-0000-0000-000000000008", filename: "discreet_billing_cards.jpg", public_url: "/art/discreet_billing_cards.jpg", file_size_bytes: 703124, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Virtual credit cards and discreet bank statement descriptors" },
+      { id: "a9000000-0000-0000-0000-000000000009", filename: "crypto_privacy_hero.jpg", public_url: "/art/crypto_privacy_hero.jpg", file_size_bytes: 959404, width: 1920, height: 1080, mime_type: "image/jpeg", alt_text: "Digital privacy stack, VPN encryption, and metadata protection" },
+    ];
+    for (const m of mediaAssets) {
+      await supabase.from("media_assets").upsert(m, { onConflict: "id" });
     }
+    console.log(`  ✓ ${mediaAssets.length} media assets seeded.`);
+
+    // 6. Posts (Read from seedData.ts)
+    console.log("\n📝 Reading and seeding all 20 long-form editorial posts...");
+    const seedTsPath = path.resolve(process.cwd(), "src", "data", "seedData.ts");
+    const seedTsContent = fs.readFileSync(seedTsPath, "utf-8");
+    const match = seedTsContent.match(/export const INITIAL_POSTS: Post\[\] = (\[[\s\S]*?\]);\s*export const INITIAL_COMMENTS/);
+    if (!match) {
+      console.warn("  ⚠️ Could not parse INITIAL_POSTS from seedData.ts");
+    } else {
+      const posts = JSON.parse(match[1]);
+      const catMap = {
+        "dating": "c1000000-0000-0000-0000-000000000001",
+        "gambling-casino": "c2000000-0000-0000-0000-000000000002",
+        "adult-lifestyle": "c3000000-0000-0000-0000-000000000003",
+        "guides-security": "c4000000-0000-0000-0000-000000000004",
+      };
+
+      let successCount = 0;
+      for (let idx = 0; idx < posts.length; idx++) {
+        const p = posts[idx];
+        const hexIdx = (idx + 1).toString().padStart(2, "0");
+        const postUuid = `p0000000-0000-0000-0000-0000000000${hexIdx}`;
+        const catId = catMap[p.categorySlug] || "c1000000-0000-0000-0000-000000000001";
+        const readingTimeMins = parseInt(p.readingTime) || 8;
+
+        const postPayload = {
+          id: postUuid,
+          title: p.title,
+          slug: p.slug,
+          excerpt: p.excerpt || "",
+          content: p.content || "",
+          featured_image: p.image || "/art/dating_comparison_guide.jpg",
+          category_id: catId,
+          status: "published",
+          published_at: "2026-09-20T12:00:00Z",
+          reading_time_minutes: readingTimeMins,
+          view_count: p.reads || 25000,
+          like_count: p.likes || 1200,
+          rating: p.rating || 4.8,
+          badge: p.badge || "Audited",
+          bonus_text: p.bonusText || null,
+          affiliate_url: p.affiliateUrl || null,
+          seo_title: `${p.title} | NoxWire`,
+          seo_description: p.excerpt || "",
+          focus_keyword: p.slug.replace(/-/g, " "),
+        };
+
+        const { error: postErr } = await supabase.from("posts").upsert(postPayload, { onConflict: "slug" });
+        if (postErr) {
+          console.warn(`  ⚠️ Post [${p.slug}]:`, postErr.message);
+        } else {
+          successCount++;
+        }
+      }
+      console.log(`  ✓ Successfully upserted ${successCount}/${posts.length} long-form articles in Supabase!`);
+    }
+
+    // 7. Post Tags
+    console.log("\n🔗 Linking Post Tags...");
+    const postTags = [
+      { post_id: "p0000000-0000-0000-0000-000000000001", tag_id: "t1000000-0000-0000-0000-000000000001" },
+      { post_id: "p0000000-0000-0000-0000-000000000001", tag_id: "t2000000-0000-0000-0000-000000000002" },
+      { post_id: "p0000000-0000-0000-0000-000000000002", tag_id: "t1000000-0000-0000-0000-000000000001" },
+      { post_id: "p0000000-0000-0000-0000-000000000002", tag_id: "t8000000-0000-0000-0000-000000000008" },
+      { post_id: "p0000000-0000-0000-0000-000000000003", tag_id: "t1000000-0000-0000-0000-000000000001" },
+      { post_id: "p0000000-0000-0000-0000-000000000003", tag_id: "t9000000-0000-0000-0000-000000000009" },
+      { post_id: "p0000000-0000-0000-0000-000000000006", tag_id: "t3000000-0000-0000-0000-000000000003" },
+      { post_id: "p0000000-0000-0000-0000-000000000007", tag_id: "t4000000-0000-0000-0000-000000000004" },
+      { post_id: "p0000000-0000-0000-0000-000000000011", tag_id: "t6000000-0000-0000-0000-000000000006" },
+      { post_id: "p0000000-0000-0000-0000-000000000012", tag_id: "t8000000-0000-0000-0000-000000000008" },
+      { post_id: "p0000000-0000-0000-0000-000000000016", tag_id: "t9000000-0000-0000-0000-000000000009" },
+    ];
+    for (const pt of postTags) {
+      await supabase.from("post_tags").upsert(pt, { onConflict: "post_id,tag_id" });
+    }
+    console.log(`  ✓ Post tags mapped.`);
+
+    // 8. Comments
+    console.log("\n💬 Upserting Moderated Comments...");
+    const sampleComments = [
+      {
+        id: "m1000000-0000-0000-0000-000000000001",
+        post_id: "p0000000-0000-0000-0000-000000000001",
+        author_name: "Julian Vance",
+        author_email: "julian.v@example.com",
+        body: "The breakdown of ghost profile ratios on free tiers matches my exact experience over the last six months. Great breakdown.",
+        status: "approved",
+      },
+      {
+        id: "m2000000-0000-0000-0000-000000000002",
+        post_id: "p0000000-0000-0000-0000-000000000007",
+        author_name: "Elena Rostova",
+        author_email: "elena.r@example.com",
+        body: "Tested the Solana cashout pipeline mentioned here and got confirmed in under 4 minutes. Refreshing to see real benchmarks instead of casino marketing fluff.",
+        status: "approved",
+      },
+      {
+        id: "m3000000-0000-0000-0000-000000000003",
+        post_id: "p0000000-0000-0000-0000-000000000011",
+        author_name: "Marcus Thorne",
+        author_email: "marcus.t@example.com",
+        body: "Fansly tiered media approach is definitely superior for long-term creators who do not want to be spamming paid PPV messages every week.",
+        status: "approved",
+      },
+    ];
+    for (const c of sampleComments) {
+      await supabase.from("comments").upsert(c, { onConflict: "id" });
+    }
+    console.log(`  ✓ ${sampleComments.length} sample comments approved and seeded.`);
+
+    // 9. Database Verification Summary
+    console.log("\n📊 Verifying Live Database Inventory...");
+    const [pCount, cCount, tCount] = await Promise.all([
+      supabase.from("posts").select("id", { count: "exact", head: true }),
+      supabase.from("categories").select("id", { count: "exact", head: true }),
+      supabase.from("tags").select("id", { count: "exact", head: true }),
+    ]);
+    console.log(`  - Posts in Supabase:      ${pCount.count ?? "unknown"}`);
+    console.log(`  - Categories in Supabase: ${cCount.count ?? "unknown"}`);
+    console.log(`  - Tags in Supabase:       ${tCount.count ?? "unknown"}`);
 
     console.log("\n=================================================");
     console.log("  🎉 Supabase Seed Execution Successfully Completed!  ");
