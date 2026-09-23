@@ -60,10 +60,10 @@ SELECT
   END
 FROM auth.users
 ON CONFLICT (id) DO UPDATE SET
-  is_admin = CASE 
-    WHEN LOWER(COALESCE(auth.users.email, '')) IN ('webrohanray@gmail.com', 'admin@noxwire.io') THEN true 
-    ELSE public.profiles.is_admin 
-  END;
+  display_name = COALESCE(EXCLUDED.display_name, public.profiles.display_name),
+  avatar_url = COALESCE(EXCLUDED.avatar_url, public.profiles.avatar_url),
+  is_admin = (public.profiles.is_admin OR EXCLUDED.is_admin),
+  updated_at = timezone('utc'::text, now());
 
 -- ==============================================================================
 -- 2. SITE SETTINGS (Singleton configuration)
