@@ -68,16 +68,16 @@ ON CONFLICT (slug) DO UPDATE SET
 
 -- 3. Tags Seed
 INSERT INTO public.tags (id, name, slug) VALUES
-  ('t1000000-0000-0000-0000-000000000001', 'Dating Apps', 'dating-apps'),
-  ('t2000000-0000-0000-0000-000000000002', 'Matchmaking', 'matchmaking'),
-  ('t3000000-0000-0000-0000-000000000003', 'Online Casino', 'online-casino'),
-  ('t4000000-0000-0000-0000-000000000004', 'Crypto Withdrawals', 'crypto-withdrawals'),
-  ('t5000000-0000-0000-0000-000000000005', 'Sports Betting', 'sports-betting'),
-  ('t6000000-0000-0000-0000-000000000006', 'OnlyFans & Creators', 'onlyfans-creators'),
-  ('t7000000-0000-0000-0000-000000000007', 'Live Webcam Tech', 'live-webcam-tech'),
-  ('t8000000-0000-0000-0000-000000000008', 'Discreet Billing', 'discreet-billing'),
-  ('t9000000-0000-0000-0000-000000000009', 'VPN Security', 'vpn-security'),
-  ('ta000000-0000-0000-0000-000000000010', 'AI Companions', 'ai-companions')
+  ('e1000000-0000-0000-0000-000000000001', 'Dating Apps', 'dating-apps'),
+  ('e2000000-0000-0000-0000-000000000002', 'Matchmaking', 'matchmaking'),
+  ('e3000000-0000-0000-0000-000000000003', 'Online Casino', 'online-casino'),
+  ('e4000000-0000-0000-0000-000000000004', 'Crypto Withdrawals', 'crypto-withdrawals'),
+  ('e5000000-0000-0000-0000-000000000005', 'Sports Betting', 'sports-betting'),
+  ('e6000000-0000-0000-0000-000000000006', 'OnlyFans & Creators', 'onlyfans-creators'),
+  ('e7000000-0000-0000-0000-000000000007', 'Live Webcam Tech', 'live-webcam-tech'),
+  ('e8000000-0000-0000-0000-000000000008', 'Discreet Billing', 'discreet-billing'),
+  ('e9000000-0000-0000-0000-000000000009', 'VPN Security', 'vpn-security'),
+  ('ea000000-0000-0000-0000-000000000010', 'AI Companions', 'ai-companions')
 ON CONFLICT (slug) DO NOTHING;
 
 -- 4. Posts Seed (All 20 Deep Humanized Articles)
@@ -92,8 +92,8 @@ const catMap = {
 
 for (let idx = 0; idx < posts.length; idx++) {
   const p = posts[idx];
-  const hexIdx = (idx + 1).toString().padStart(2, "0");
-  const postUuid = `p0000000-0000-0000-0000-0000000000${hexIdx}`;
+  const hexIdx = (idx + 1).toString(16).padStart(2, "0");
+  const postUuid = `b0000000-0000-0000-0000-0000000000${hexIdx}`;
   const catId = catMap[p.categorySlug] || "c1000000-0000-0000-0000-000000000001";
   const readingTimeMins = parseInt(p.readingTime) || 8;
 
@@ -138,8 +138,8 @@ for (let idx = 0; idx < posts.length; idx++) {
 sql += `-- 5. Sample Comments
 INSERT INTO public.comments (id, post_id, author_name, author_email, body, status, created_at) VALUES
   (
-    'm1000000-0000-0000-0000-000000000001',
-    'p0000000-0000-0000-0000-000000000001',
+    'd1000000-0000-0000-0000-000000000001',
+    'b0000000-0000-0000-0000-000000000001',
     'Julian Vance',
     'julian.v@example.com',
     'The breakdown of ghost profile ratios on free tiers matches my exact experience over the last six months. Great breakdown.',
@@ -147,8 +147,8 @@ INSERT INTO public.comments (id, post_id, author_name, author_email, body, statu
     '2026-09-20 16:30:00+00'
   ),
   (
-    'm2000000-0000-0000-0000-000000000002',
-    'p0000000-0000-0000-0000-000000000007',
+    'd2000000-0000-0000-0000-000000000002',
+    'b0000000-0000-0000-0000-000000000007',
     'Elena Rostova',
     'elena.r@example.com',
     'Tested the Solana cashout pipeline mentioned here and got confirmed in under 4 minutes. Refreshing to see real benchmarks instead of casino marketing fluff.',
@@ -156,8 +156,8 @@ INSERT INTO public.comments (id, post_id, author_name, author_email, body, statu
     '2026-09-19 18:20:00+00'
   ),
   (
-    'm3000000-0000-0000-0000-000000000003',
-    'p0000000-0000-0000-0000-000000000011',
+    'd3000000-0000-0000-0000-000000000003',
+    'b0000000-0000-0000-0000-00000000000b',
     'Marcus Thorne',
     'marcus.t@example.com',
     'Fansly tiered media approach is definitely superior for long-term creators who do not want to be spamming paid PPV messages every week.',
@@ -181,17 +181,17 @@ ON CONFLICT (id) DO NOTHING;
 
 -- 7. Post Tags Association
 INSERT INTO public.post_tags (post_id, tag_id) VALUES
-  ('p0000000-0000-0000-0000-000000000001', 't1000000-0000-0000-0000-000000000001'),
-  ('p0000000-0000-0000-0000-000000000001', 't2000000-0000-0000-0000-000000000002'),
-  ('p0000000-0000-0000-0000-000000000002', 't1000000-0000-0000-0000-000000000001'),
-  ('p0000000-0000-0000-0000-000000000002', 't8000000-0000-0000-0000-000000000008'),
-  ('p0000000-0000-0000-0000-000000000003', 't1000000-0000-0000-0000-000000000001'),
-  ('p0000000-0000-0000-0000-000000000003', 't9000000-0000-0000-0000-000000000009'),
-  ('p0000000-0000-0000-0000-000000000006', 't3000000-0000-0000-0000-000000000003'),
-  ('p0000000-0000-0000-0000-000000000007', 't4000000-0000-0000-0000-000000000004'),
-  ('p0000000-0000-0000-0000-000000000011', 't6000000-0000-0000-0000-000000000006'),
-  ('p0000000-0000-0000-0000-000000000012', 't8000000-0000-0000-0000-000000000008'),
-  ('p0000000-0000-0000-0000-000000000016', 't9000000-0000-0000-0000-000000000009')
+  ('b0000000-0000-0000-0000-000000000001', 'e1000000-0000-0000-0000-000000000001'),
+  ('b0000000-0000-0000-0000-000000000001', 'e2000000-0000-0000-0000-000000000002'),
+  ('b0000000-0000-0000-0000-000000000002', 'e1000000-0000-0000-0000-000000000001'),
+  ('b0000000-0000-0000-0000-000000000002', 'e8000000-0000-0000-0000-000000000008'),
+  ('b0000000-0000-0000-0000-000000000003', 'e1000000-0000-0000-0000-000000000001'),
+  ('b0000000-0000-0000-0000-000000000003', 'e9000000-0000-0000-0000-000000000009'),
+  ('b0000000-0000-0000-0000-000000000006', 'e3000000-0000-0000-0000-000000000003'),
+  ('b0000000-0000-0000-0000-000000000007', 'e4000000-0000-0000-0000-000000000004'),
+  ('b0000000-0000-0000-0000-00000000000b', 'e6000000-0000-0000-0000-000000000006'),
+  ('b0000000-0000-0000-0000-00000000000c', 'e8000000-0000-0000-0000-000000000008'),
+  ('b0000000-0000-0000-0000-000000000010', 'e9000000-0000-0000-0000-000000000009')
 ON CONFLICT (post_id, tag_id) DO NOTHING;
 `;
 
