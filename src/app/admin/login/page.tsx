@@ -8,8 +8,8 @@ import { AtlasLogo } from "@/components/brand/AtlasLogo";
 export default function AdminLoginPage() {
   const router = useRouter();
 
-  const [email, setEmail] = useState("maya.patel@atlasjournal.io");
-  const [password, setPassword] = useState("atlas2026!");
+  const [email, setEmail] = useState("webrohanray@gmail.com");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,10 +83,13 @@ export default function AdminLoginPage() {
           </div>
         )}
 
-        {/* Default credentials tip */}
-        <div className="rounded-xl border border-orange/30 bg-navy/60 p-3 text-[11px] text-orange-soft flex items-center justify-between">
-          <span>Admin: <code className="text-white font-mono">maya.patel@atlasjournal.io</code></span>
-          <span>Pass: <code className="text-white font-mono">atlas2026!</code></span>
+        {/* Supabase Authenticated Badge */}
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-950/30 p-2.5 text-[11px] text-emerald-300 flex items-center justify-between">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Supabase Cloud Authentication Active</span>
+          </span>
+          <span className="text-slate-400 font-mono text-[10px]">v1.1</span>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4 text-xs">
