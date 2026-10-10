@@ -192,16 +192,16 @@ async function runSeed() {
     // 4. Tags
     console.log("\n🏷️ Upserting High-Intent SEO Tags...");
     const tags = [
-      { id: "t1000000-0000-0000-0000-000000000001", name: "Dating Apps", slug: "dating-apps" },
-      { id: "t2000000-0000-0000-0000-000000000002", name: "Matchmaking", slug: "matchmaking" },
-      { id: "t3000000-0000-0000-0000-000000000003", name: "Online Casino", slug: "online-casino" },
-      { id: "t4000000-0000-0000-0000-000000000004", name: "Crypto Withdrawals", slug: "crypto-withdrawals" },
-      { id: "t5000000-0000-0000-0000-000000000005", name: "Sports Betting", slug: "sports-betting" },
-      { id: "t6000000-0000-0000-0000-000000000006", name: "OnlyFans & Creators", slug: "onlyfans-creators" },
-      { id: "t7000000-0000-0000-0000-000000000007", name: "Live Webcam Tech", slug: "live-webcam-tech" },
-      { id: "t8000000-0000-0000-0000-000000000008", name: "Discreet Billing", slug: "discreet-billing" },
-      { id: "t9000000-0000-0000-0000-000000000009", name: "VPN Security", slug: "vpn-security" },
-      { id: "ta000000-0000-0000-0000-000000000010", name: "AI Companions", slug: "ai-companions" },
+      { id: "e1000000-0000-0000-0000-000000000001", name: "Dating Apps", slug: "dating-apps" },
+      { id: "e2000000-0000-0000-0000-000000000002", name: "Matchmaking", slug: "matchmaking" },
+      { id: "e3000000-0000-0000-0000-000000000003", name: "Online Casino", slug: "online-casino" },
+      { id: "e4000000-0000-0000-0000-000000000004", name: "Crypto Withdrawals", slug: "crypto-withdrawals" },
+      { id: "e5000000-0000-0000-0000-000000000005", name: "Sports Betting", slug: "sports-betting" },
+      { id: "e6000000-0000-0000-0000-000000000006", name: "OnlyFans & Creators", slug: "onlyfans-creators" },
+      { id: "e7000000-0000-0000-0000-000000000007", name: "Live Webcam Tech", slug: "live-webcam-tech" },
+      { id: "e8000000-0000-0000-0000-000000000008", name: "Discreet Billing", slug: "discreet-billing" },
+      { id: "e9000000-0000-0000-0000-000000000009", name: "VPN Security", slug: "vpn-security" },
+      { id: "ea000000-0000-0000-0000-000000000010", name: "AI Companions", slug: "ai-companions" },
     ];
 
     for (const tag of tags) {
@@ -249,8 +249,8 @@ async function runSeed() {
       let successCount = 0;
       for (let idx = 0; idx < posts.length; idx++) {
         const p = posts[idx];
-        const hexIdx = (idx + 1).toString().padStart(2, "0");
-        const postUuid = `p0000000-0000-0000-0000-0000000000${hexIdx}`;
+        const hexIdx = (idx + 1).toString(16).padStart(2, "0");
+        const postUuid = `b0000000-0000-0000-0000-0000000000${hexIdx}`;
         const catId = catMap[p.categorySlug] || "c1000000-0000-0000-0000-000000000001";
         const readingTimeMins = parseInt(p.readingTime) || 8;
 
@@ -289,17 +289,17 @@ async function runSeed() {
     // 7. Post Tags
     console.log("\n🔗 Linking Post Tags...");
     const postTags = [
-      { post_id: "p0000000-0000-0000-0000-000000000001", tag_id: "t1000000-0000-0000-0000-000000000001" },
-      { post_id: "p0000000-0000-0000-0000-000000000001", tag_id: "t2000000-0000-0000-0000-000000000002" },
-      { post_id: "p0000000-0000-0000-0000-000000000002", tag_id: "t1000000-0000-0000-0000-000000000001" },
-      { post_id: "p0000000-0000-0000-0000-000000000002", tag_id: "t8000000-0000-0000-0000-000000000008" },
-      { post_id: "p0000000-0000-0000-0000-000000000003", tag_id: "t1000000-0000-0000-0000-000000000001" },
-      { post_id: "p0000000-0000-0000-0000-000000000003", tag_id: "t9000000-0000-0000-0000-000000000009" },
-      { post_id: "p0000000-0000-0000-0000-000000000006", tag_id: "t3000000-0000-0000-0000-000000000003" },
-      { post_id: "p0000000-0000-0000-0000-000000000007", tag_id: "t4000000-0000-0000-0000-000000000004" },
-      { post_id: "p0000000-0000-0000-0000-000000000011", tag_id: "t6000000-0000-0000-0000-000000000006" },
-      { post_id: "p0000000-0000-0000-0000-000000000012", tag_id: "t8000000-0000-0000-0000-000000000008" },
-      { post_id: "p0000000-0000-0000-0000-000000000016", tag_id: "t9000000-0000-0000-0000-000000000009" },
+      { post_id: "b0000000-0000-0000-0000-000000000001", tag_id: "e1000000-0000-0000-0000-000000000001" },
+      { post_id: "b0000000-0000-0000-0000-000000000001", tag_id: "e2000000-0000-0000-0000-000000000002" },
+      { post_id: "b0000000-0000-0000-0000-000000000002", tag_id: "e1000000-0000-0000-0000-000000000001" },
+      { post_id: "b0000000-0000-0000-0000-000000000002", tag_id: "e8000000-0000-0000-0000-000000000008" },
+      { post_id: "b0000000-0000-0000-0000-000000000003", tag_id: "e1000000-0000-0000-0000-000000000001" },
+      { post_id: "b0000000-0000-0000-0000-000000000003", tag_id: "e9000000-0000-0000-0000-000000000009" },
+      { post_id: "b0000000-0000-0000-0000-000000000006", tag_id: "e3000000-0000-0000-0000-000000000003" },
+      { post_id: "b0000000-0000-0000-0000-000000000007", tag_id: "e4000000-0000-0000-0000-000000000004" },
+      { post_id: "b0000000-0000-0000-0000-00000000000b", tag_id: "e6000000-0000-0000-0000-000000000006" },
+      { post_id: "b0000000-0000-0000-0000-00000000000c", tag_id: "e8000000-0000-0000-0000-000000000008" },
+      { post_id: "b0000000-0000-0000-0000-000000000010", tag_id: "e9000000-0000-0000-0000-000000000009" },
     ];
     for (const pt of postTags) {
       await supabase.from("post_tags").upsert(pt, { onConflict: "post_id,tag_id" });
@@ -310,24 +310,24 @@ async function runSeed() {
     console.log("\n💬 Upserting Moderated Comments...");
     const sampleComments = [
       {
-        id: "m1000000-0000-0000-0000-000000000001",
-        post_id: "p0000000-0000-0000-0000-000000000001",
+        id: "d1000000-0000-0000-0000-000000000001",
+        post_id: "b0000000-0000-0000-0000-000000000001",
         author_name: "Julian Vance",
         author_email: "julian.v@example.com",
         body: "The breakdown of ghost profile ratios on free tiers matches my exact experience over the last six months. Great breakdown.",
         status: "approved",
       },
       {
-        id: "m2000000-0000-0000-0000-000000000002",
-        post_id: "p0000000-0000-0000-0000-000000000007",
+        id: "d2000000-0000-0000-0000-000000000002",
+        post_id: "b0000000-0000-0000-0000-000000000007",
         author_name: "Elena Rostova",
         author_email: "elena.r@example.com",
         body: "Tested the Solana cashout pipeline mentioned here and got confirmed in under 4 minutes. Refreshing to see real benchmarks instead of casino marketing fluff.",
         status: "approved",
       },
       {
-        id: "m3000000-0000-0000-0000-000000000003",
-        post_id: "p0000000-0000-0000-0000-000000000011",
+        id: "d3000000-0000-0000-0000-000000000003",
+        post_id: "b0000000-0000-0000-0000-00000000000b",
         author_name: "Marcus Thorne",
         author_email: "marcus.t@example.com",
         body: "Fansly tiered media approach is definitely superior for long-term creators who do not want to be spamming paid PPV messages every week.",
