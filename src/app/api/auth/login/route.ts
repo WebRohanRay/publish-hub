@@ -107,9 +107,10 @@ export async function POST(request: Request) {
     });
 
     return response;
-  } catch {
+  } catch (err: any) {
+    console.error("❌ Login route exception:", err?.message || err, err?.stack);
     return NextResponse.json(
-      { error: "Internal authentication error." },
+      { error: `Internal authentication error: ${err?.message || "Unknown"}` },
       { status: 500 }
     );
   }
