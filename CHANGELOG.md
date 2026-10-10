@@ -1,40 +1,37 @@
-# Changelog — NoxWire / PublishHub
+# Changelog
 
-All notable changes and architectural enhancements to the NoxWire editorial platform are documented in this file.
+All notable changes to the **Atlas Journal / Publish Hub** platform are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [1.1.0] — 2026-09-23
+## [1.1.0] - 2026-10-10
 
 ### Added
-- **Idempotent Supabase Schema & Storage Policies**:
-  - Implemented `DROP POLICY IF EXISTS` across all 11 tables (`profiles`, `posts`, `categories`, `tags`, `post_tags`, `comments`, `likes`, `view_events`, `newsletter_subscribers`, `site_settings`, `activity_logs`).
-  - Added public read access to `profiles` and `post_tags` to allow unauthenticated readers to view author avatars and article tags.
-  - Added public update policies for `likes` and `newsletter_subscribers` to support idempotent client upsert mutations.
-  - Upgraded `public.is_admin()` helper function with `service_role` token recognition.
-  - Automatically configured Supabase Storage buckets `blog-images` (10MB limit) and `avatars` (5MB limit) with public read access and admin/service-role upload policies.
-  - Created automatic `updated_at` triggers for all temporal tables.
-- **Multilingual & Automatic Geo-IP Routing**:
-  - Built edge Geo-IP resolver (`/api/geo`) and middleware reading IP country headers (`x-vercel-ip-country`, `cf-ipcountry`).
-  - Complete 4-language dictionaries (`en`, `es`, `de`, `fr`) translating headers, hero ribbon, comparison matrices, story cards, category filters, and every single section of all 20 blog articles.
-- **Article Interactive Features**:
-  - `ShareModal.tsx`: Multi-platform social dispatch (X, Reddit, Telegram, WhatsApp, LinkedIn) with 1-click clipboard copy.
-  - `BackToTop.tsx`: Floating navigation button with threshold scroll spy.
-  - `ReadingProgressBar.tsx`: Gradient reading scroll spy for long-form content.
-  - `TableOfContents.tsx`: Dynamic heading tree generator with active section highlight.
-  - `FaqSchema.tsx`: Google SERP rich results `FAQPage` JSON-LD generator.
-  - `StickyFooterAd.tsx`: High-CTR sponsored banner with session dismissal and CLS protection.
-- **Syndication & Search Engine Discovery**:
-  - Added Atom 1.0 syndication feed (`/feed.atom`) alongside RSS 2.0 (`/rss.xml`).
-  - Web App Manifest (`/manifest.webmanifest`) and service worker (`public/sw.js`) for offline reading.
-  - `PwaInstallPrompt.tsx` component with deferred install flow.
-  - `GOOGLE_SEARCH_CONSOLE_GUIDE.md` and `VIRAL_EDITORIAL_STANDARDS.md`.
-- **TypeScript & Utilities**:
-  - `database.types.ts`: Comprehensive type definitions for all tables and relationships.
-  - `readingMetrics.ts`: Word count and silent reading duration calculator.
-  - `exportUtils.ts`: JSON backup packaging and Markdown frontmatter export engine.
-  - `fuzzySearch.ts`: Client-side fuzzy search with weighted scoring.
+- **Supabase Cloud Database Integration**: Full relational data persistence layer for posts, authors, categories, tags, comments, and media assets.
+- **Dynamic Admin Dashboard**: Real-time admin views connected to live Supabase backend with zero mock data dependency.
+- **Storage Asset Pipeline**: Automated Supabase Storage bucket synchronization script for local-to-cloud media hosting.
+- **Deep Editorial Content**: High-intent, fact-checked editorial posts including 2,100+ word deep-dive investigations with comparison matrices.
+- **Standalone Admin Login**: Full-screen authentication interface with Supabase Cloud status telemetry and custom session management.
 
 ### Changed
-- Converted all 20 blog articles into story-driven, data-backed investigative journalism with benchmark comparison tables and natural internal backlinks.
-- Redesigned visual branding to dark cyberpunk editorial aesthetics (obsidian, amber-gold accents, custom artwork).
+- Converted primary and foreign keys in database migrations and seed scripts to standard hexadecimal UUID v4 formats.
+- Modernized styling with dark obsidian palette, emerald telemetry badges, and glassmorphism cards.
+- Refactored category routing and post filtering to support both dynamic cloud queries and resilient fallback modes.
+
+### Fixed
+- Fixed PostgreSQL UUID parsing error in seed generator by standardizing hex identifier padding.
+- Enhanced API authentication error logging to capture explicit message traces.
+
+---
+
+## [1.0.0] - 2026-09-01
+
+### Added
+- Initial release of Publish Hub platform built on Next.js 16 (Turbopack) and React 19.
+- Responsive reader view with reading time estimates, author cards, and newsletter capture.
+- RSS 2.0 and Atom XML feeds with automated dynamic generation.
+- Dynamic XML sitemap and robots.txt generation.
+- Modern Tailwind CSS v4 styling system.
