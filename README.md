@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Atlas Journal (Publish Hub)
 
-## Getting Started
+> A modern, search-optimized publishing engine and editorial platform engineered with Next.js 16 (Turbopack), React 19, Tailwind CSS v4, and Supabase Cloud PostgreSQL.
 
-First, run the development server:
+---
 
+## Highlights
+
+- **Next.js 16 App Router**: 70+ statically pre-rendered routes (SSG) with incremental revalidation and edge proxy support.
+- **Supabase Relational Core**: Full PostgreSQL 15 schema for posts, categories, authors, tags, comments, and media assets.
+- **Autonomous Admin Dashboard**: Live administrative command center for moderation, taxonomy, analytics, and content authoring.
+- **Search & Answer Engine Optimization**: Built-in Schema.org JSON-LD structured data (`Article`, `BreadcrumbList`, `FAQPage`), dynamic XML sitemap, and robots.txt.
+- **High-Aesthetic Editorial UI**: Obsidian and slate color architecture, warm typography, responsive cards, and reading time estimates.
+- **Dual-Data Architecture**: Connects to Supabase Cloud with transparent, zero-downtime fallback to local in-memory stores for resilient offline builds.
+
+---
+
+## Quickstart
+
+### Prerequisites
+- Node.js 18.x or 20.x
+- npm or pnpm
+
+### 1. Installation
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/WebRohanRay/publish-hub.git
+cd publish-hub
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment
+```bash
+cp .env.example .env.local
+```
+Update `.env.local` with your Supabase credentials:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Initialize Database
+Execute `supabase/schema.sql` in your Supabase SQL Editor, then populate seed data:
+```bash
+npm run seed
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) to view Atlas Journal.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Build & Production Verification
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Verify the production build:
+```bash
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Documentation Index
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- [System Architecture](docs/SYSTEM_ARCHITECTURE.md)
+- [REST API Reference](docs/API.md)
+- [Database Schema & Migrations](docs/DATABASE.md)
+- [Supabase Setup Guide](docs/SUPABASE_SETUP.md)
+- [SEO & AEO Directives](docs/SEO_GUIDELINES.md)
+- [Security & Zero-Leak Policy](docs/SECURITY.md)
+- [Editorial Quality Rubric](docs/EDITORIAL_QUALITY.md)
+- [Changelog](CHANGELOG.md)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## License
+MIT © 2026 Atlas Journal / Publish Hub
